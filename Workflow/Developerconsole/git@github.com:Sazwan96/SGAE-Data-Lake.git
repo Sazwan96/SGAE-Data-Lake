@@ -1,0 +1,624 @@
+sazwan.banking@ai.my
+v2/country/all/indicator/NY.GDP.MKTP.CD
+Market Stream:
+WS wss://stream.sazwan.digital/market/live-telemetry
+disimpan terus ke dalam pangkalan data (seperti MongoDB/MySQL) atau dipaparkan pada dashboard secara langsung?# About protected branches
+
+You can protect important branches by setting branch protection rules, which define whether collaborators can delete or force push to the branch and set requirements for any pushes to the branch, such as passing status checks or a linear commit history.
+
+## About branch protection rules
+
+> [!TIP] If you use branch protection rules that require specific status checks, make sure that job names are unique across all workflows. Using the same job name in multiple workflows can cause ambiguous status check results and block pull requests from being merged. See [Status checks](/en/pull-requests/reference/status-checks).
+
+You can enforce certain workflows or requirements before a collaborator can push changes to a branch in your repository, including merging a pull request into the branch, by creating a branch protection rule. Actors may only be added to bypass lists when the repository belongs to an organization.
+
+By default, each branch protection rule disables force pushes to the matching branches and prevents the matching branches from being deleted. You can optionally disable these restrictions and enable additional branch protection settings.
+
+By default, the restrictions of a branch protection rule don't apply to people with admin permissions to the repository or custom roles with the "bypass branch protections" permission. You can optionally apply the restrictions to administrators and roles with the "bypass branch protections" permission, too. For more information, see [Managing custom repository roles for an organization](/en/enterprise-cloud@latest/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/managing-custom-repository-roles-for-an-organization).
+
+You can create a branch protection rule in a repository for a specific branch, all branches, or any branch that matches a name pattern you specify with `fnmatch` syntax. For example, to protect any branches containing the word `release`, you can create a branch rule for `*release*`. For more information about branch name patterns, see [Managing a branch protection rule](/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
+
+You can configure a pull request to merge automatically when all merge requirements are met. For more information, see [Automatically merging a pull request](/en/pull-requests/how-tos/merge-and-close-pull-requests/automatically-merging-a-pull-request).
+
+> [!NOTE]
+> Only a single branch protection rule can apply at a time, which means it can be difficult to know which rule will apply when multiple versions of a rule target the same branch. This restriction does not apply to rulesets, see [About rulesets](/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets). To convert branch protection rules to rulesets, see [Converting branch protections to rulesets](/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/converting-branch-protections-to-rulesets).
+
+## About branch protection settings
+
+For each branch protection rule, you can choose to enable or disable the following settings.
+
+* [Require pull request reviews before merging](#require-pull-request-reviews-before-merging)
+* [Require status checks before merging](#require-status-checks-before-merging)
+* [Require conversation resolution before merging](#require-conversation-resolution-before-merging)
+* [Require signed commits](#require-signed-commits)
+* [Require linear history](#require-linear-history)
+* [Require merge queue](#require-merge-queue)
+* [Require deployments to succeed before merging](#require-deployments-to-succeed-before-merging)
+* [Lock branch](#lock-branch)
+* [Do not allow bypassing the above settings](#do-not-allow-bypassing-the-above-settings)
+* [Restrict who can push to matching branches](#restrict-who-can-push-to-matching-branches)
+* [Allow force pushes](#allow-force-pushes)
+* [Allow deletions](#allow-deletions)
+
+For more information on how to set up branch protection, see [Managing a branch protection rule](/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
+
+### Require pull request reviews before merging
+
+Repository administrators or custom roles with the "edit repository rules" permission can require that all pull requests receive a specific number of approving reviews before someone merges the pull request into a protected branch. You can require approving reviews from people with write permissions in the repository or from a designated code owner.
+
+If you enable required reviews, collaborators can only push changes to a protected branch via a pull request that is approved by the required number of reviewers with write permissions.
+
+If a person with admin permissions chooses the **Request changes** option in a review, then that person must approve the pull request before the pull request can be merged. If a reviewer who requests changes on a pull request isn't available, anyone with write permissions for the repository can dismiss the blocking review.
+
+Even after all required reviewers have approved a pull request, collaborators cannot merge the pull request if there are other open pull requests that have a head branch pointing to the same commit with pending or rejected reviews. Someone with write permissions must approve or dismiss the blocking review on the other pull requests first.
+
+If a collaborator attempts to merge a pull request with pending or rejected reviews into the protected branch, the collaborator will receive an error message.
+
+```shell
+remote: error: GH006: Protected branch update failed for refs/heads/main.
+remote: error: Changes have been requested.
+```
+
+Optionally, you can choose to dismiss stale pull request approvals when commits are pushed that affect the diff in the pull request. GitHub records the state of the diff at the point when a pull request is approved. This state represents the set of changes that the reviewer approved. If the diff changes from this state (for example, because a contributor pushes new changes to the pull request branch or clicks **Update branch**, or because a related pull request is merged into the target branch), the approving review is dismissed as stale, and the pull request cannot be merged until someone approves the work again. For information about the base branch, see [Pull requests](/en/pull-requests/reference/pull-requests).
+
+Optionally, you can restrict the ability to dismiss pull request reviews to specific people or teams. For more information, see [Dismissing a pull request review](/en/pull-requests/how-tos/review-pull-requests/dismissing-a-pull-request-review).
+
+Optionally, you can choose to require reviews from code owners. If you do, any pull request that affects code with a code owner must be approved by that code owner before the pull request can be merged into the protected branch.
+
+Optionally, you can require that the most recent reviewable push must be approved by someone other than the person who pushed it. This means at least one other authorized reviewer has approved any changes. For example, the "last reviewer" can check that the latest set of changes incorporates feedback from other reviews, and does not add new, unreviewed content.
+
+For complex pull requests that require many reviews, requiring an approval from someone other than the last person to push can be a compromise that avoids the need to dismiss all stale reviews: with this option, "stale" reviews are not dismissed, and the pull request remains approved as long as someone other than the person who made the most recent changes approves it. Users who have already reviewed a pull request can reapprove after the most recent push to meet this requirement. If you are concerned about pull requests being "hijacked" (where unapproved content is added to approved pull requests), it is safer to dismiss stale reviews.
+
+> [!NOTE] If you select **Dismiss stale pull request approvals when new commits are pushed** and/or **Require approval of the most recent reviewable push**, manually creating the merge commit for a pull request and pushing it directly to a protected branch will fail, unless the contents of the merge exactly match the merge generated by GitHub for the pull request.
+>
+> In addition, with these settings, approving reviews will be dismissed as stale if the merge base introduces new changes after the review was submitted. The merge base is the commit that is the last common ancestor between the topic branch and the base branch. If the merge base changes, the pull request cannot be merged until someone approves the work again.
+
+### Require status checks before merging
+
+Required status checks must have a `successful`, `skipped`, or `neutral` status before collaborators can make changes to a protected branch. Required status checks can be checks or commit statuses. For more information, see [Status checks](/en/pull-requests/reference/status-checks).
+
+You can use the commit status API to allow external services to mark commits with an appropriate status. For more information, see [REST API endpoints for commit statuses](/en/rest/commits/statuses).
+
+After enabling required status checks, all required status checks must pass before collaborators can merge changes into the protected branch. After all required status checks pass, any commits must either be pushed to another branch and then merged or pushed directly to the protected branch.
+
+Any person or integration with write permissions to a repository can set the state of any status check in the repository, but in some cases you may only want to accept a status check from a specific GitHub App. When you add a required status check, you can select an app that has recently set this check as the expected source of status updates. If the status is set by any other person or integration, merging won't be allowed. If you select "any source", you can still manually verify the author of each status, listed in the merge box.
+
+You can set up required status checks to either be "loose" or "strict." The type of required status check you choose determines whether your branch is required to be up to date with the base branch before merging.
+
+| Type of required status check | Setting                                                                               | Merge requirements                                                                 | Considerations                                                                                                                                                                                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Strict**                    | The **Require branches to be up to date before merging** checkbox is checked.         | The branch **must** be up to date with the base branch before merging.             | This is the default behavior for required status checks. More builds may be required, as you'll need to bring the head branch up to date after other collaborators update the target branch.                                                       |
+| **Loose**                     | The **Require branches to be up to date before merging** checkbox is **not** checked. | The branch **does not** have to be up to date with the base branch before merging. | You'll have fewer required builds, as you won't need to bring the head branch up to date after other collaborators merge pull requests. Status checks may fail after you merge your branch if there are incompatible changes with the base branch. |
+| **Disabled**                  | The **Require status checks to pass before merging** checkbox is **not** checked.     | The branch has no merge restrictions.                                              | If required status checks aren't enabled, collaborators can merge the branch at any time, regardless of whether it is up to date with the base branch. This increases the possibility of incompatible changes.                                     |
+
+For troubleshooting information, see [Troubleshooting required status checks](/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks).
+
+### Require conversation resolution before merging
+
+Requires all comments on the pull request to be resolved before it can be merged to a protected branch. This ensures that all comments are addressed or acknowledged before merge.
+
+### Require signed commits
+
+When you enable required commit signing on a branch, contributors and bots can only push commits that have been signed and verified to the branch. For more information, see [About commit signature verification](/en/authentication/managing-commit-signature-verification/about-commit-signature-verification).
+
+> [!NOTE]
+
+> * If you have enabled vigilant mode, which indicates that your commits will always be signed, any commits that GitHub identifies as "Partially verified" are permitted on branches that require signed commits. For more information about vigilant mode, see [Displaying verification statuses for all of your commits](/en/authentication/managing-commit-signature-verification/displaying-verification-statuses-for-all-of-your-commits).
+> * If a collaborator pushes an unsigned commit to a branch that requires commit signatures, the collaborator will need to rebase the commit to include a verified signature, then force push the rewritten commit to the branch.
+
+You can push local commits to the branch if the commits are signed and verified.
+
+You can also merge signed and verified commits into the branch using a pull request. When GitHub evaluates whether a pull request can be merged, it creates a test merge commit whose parents are the latest commit on the base branch and the pull request's head commit. GitHub checks the commits introduced by this test merge, including commits from the head branch. As a result, unsigned commits on the head branch can block a squash merge, even though GitHub would sign the final squash commit. This restriction can also apply to the author of the pull request.
+
+To merge a blocked pull request, rewrite and sign the unsigned commits on the head branch, or ask someone with permission to bypass the applicable protections to merge the pull request.
+
+You can squash and merge pull requests locally, but you must sign the resulting commit before pushing it to the branch. If another protection requires changes to be made through a pull request, you may also need bypass permissions to push the locally merged commit. See [Checking out pull requests locally](/en/pull-requests/how-tos/review-pull-requests/checking-out-pull-requests-locally) and [Signing commits](/en/authentication/managing-commit-signature-verification/signing-commits).
+
+For more information about merge methods, see [About merge methods on GitHub](/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/about-merge-methods-on-github).
+
+### Require linear history
+
+Enforcing a linear commit history prevents collaborators from pushing merge commits to the branch. This means that any pull requests merged into the protected branch must use a squash merge or a rebase merge. A strictly linear commit history can help teams revert changes more easily. For more information about merge methods, see [Pull request merges](/en/pull-requests/reference/pull-request-merges).
+
+Before you can require a linear commit history, your repository must allow squash merging or rebase merging. For more information, see [Configuring pull request merges](/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges).
+
+### Require merge queue
+
+A merge queue helps increase velocity by automating pull request merges into a busy branch and ensuring the branch is never broken by incompatible changes.
+
+The merge queue provides the same benefits as the **Require branches to be up to date before merging** branch protection, but does not require a pull request author to update their pull request branch and wait for status checks to finish before trying to merge.
+
+Using a merge queue is particularly useful on branches that have a relatively high number of pull requests merging each day from many different users.
+
+Once a pull request has passed all required branch protection checks, a user with write access to the repository can add the pull request to the queue. The merge queue will ensure the pull request's changes pass all required status checks when applied to the latest version of the target branch and any pull requests already in the queue.
+
+A merge queue may use GitHub Actions or your own CI provider to run required checks on pull requests in a merge queue. For more information, see [GitHub Actions documentation](/en/actions).
+
+GitHub merges the pull request according to the merge strategy configured in the branch protection once all required CI checks pass.
+For more information about merge queues, see [Managing a merge queue](/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue).
+
+### Require deployments to succeed before merging
+
+You can require that changes are successfully deployed to specific environments before a branch can be merged. For example, you can use this rule to ensure that changes are successfully deployed to a staging environment before the changes merge to your default branch.
+
+### Lock branch
+
+Locking a branch will make the branch read-only and ensures that no commits can be made to the branch. Locked branches can also not be deleted.
+
+By default, a forked repository does not support syncing from its upstream repository. You can enable **Allow fork syncing** to pull changes from the upstream repository while preventing other contributions to the fork's branch.
+
+### Do not allow bypassing the above settings
+
+By default, the restrictions of a branch protection rule do not apply to people with admin permissions to the repository or custom roles with the "bypass branch protections" permission in a repository.
+
+You can enable this setting to apply the restrictions to admins and roles with the "bypass branch protections" permission, too. For more information, see [Managing custom repository roles for an organization](/en/enterprise-cloud@latest/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/managing-custom-repository-roles-for-an-organization).
+
+### Restrict who can push to matching branches
+
+You can enable branch restrictions in public repositories owned by a GitHub Free organization and in all repositories owned by an organization using GitHub Team or GitHub Enterprise Cloud.
+
+When you enable branch restrictions, only users, teams, or apps that have been given permission can push to the protected branch. You can view and edit the users, teams, or apps with push access to a protected branch in the protected branch's settings. When status checks are required, the people, teams, and apps that have permission to push to a protected branch will still be prevented from merging into the branch when the required checks fail. People, teams, and apps that have permission to push to a protected branch will still need to create a pull request when pull requests are required.
+
+Optionally, you can apply the same restrictions to the creation of branches that match the rule. For example, if you create a rule that only allows a certain team to push to any branches that contain the word `release`, only members of that team would be able to create a new branch that contains the word `release`.
+
+You can only give push access to a protected branch, or give permission to create a matching branch, to users, teams, or installed GitHub Apps with write access to a repository. People and apps with admin permissions to a repository are always able to push to a protected branch or create a matching branch.
+
+### Allow force pushes
+
+By default, GitHub blocks force pushes on all protected branches. When you enable force pushes to a protected branch, you can choose one of two groups who can force push:
+
+1. Allow everyone with at least write permissions to the repository to force push to the branch, including those with admin permissions.
+2. Allow only specific people or teams to force push to the branch.
+
+If someone force pushes to a branch, the force push may mean commits that other collaborators based their work on are removed from the history of the branch. People may have merge conflicts or corrupted pull requests. Force pushing can also be used to delete branches or point a branch to commits that were not approved in a pull request.
+
+Enabling force pushes will not override any other branch protection rules. For example, if a branch requires a linear commit history, you cannot force push merge commits to that branch.
+
+### Allow deletions
+
+By default, you cannot delete a protected branch. When you enable deletion of a protected branch, anyone with at least write permissions to the repository can delete the branch.
+
+> [!NOTE]
+> If the branch is locked, you cannot delete the branch even if you have permission to delete it.Berdasarkan pilihan 1 (JavaScript / Node.js) dan 3 (format data khusus) daripada respons sebelum ini, berikut adalah implementasi klien WebSocket menggunakan Node.js berserta simulasi struktur data telemetri yang biasanya dihantar oleh pelayan pasaran.
+
+🛠️ Kod Klien WebSocket (Node.js)
+
+Untuk menjalankan kod ini, anda memerlukan pakej ws. Sila pasang terlebih dahulu menggunakan terminal:
+bash
+npm install ws
+Use code with caution.
+Seterusnya, simpan dan jalankan kod di bawah (contoh: app.js):
+javascript
+const WebSocket = require('ws');
+
+// Konfigurasi URL dan Payload Data
+const STREAM_URI = "wss://stream.sazwan.digital/market/live-telemetry";
+const PAYLOAD = {
+    action: "subscribe",
+    stream: "market_stream",
+    indicator: "NY.GDP.MKTP.CD"
+};
+
+function connectStream() {
+    console.log(`[INFO] Menyambung ke ${STREAM_URI}...`);
+    const ws = new WebSocket(STREAM_URI);
+
+    // 1. Apabila sambungan berjaya ditubuhkan
+    ws.on('open', () => {
+        console.log("[JAYA] Sambungan ke pelayan telemetri berjaya.");
+        
+        // Menghantar permintaan langganan
+        ws.send(JSON.stringify(PAYLOAD));
+        console.log(`[INFO] Payload langganan dihantar untuk: ${PAYLOAD.indicator}`);
+    });
+
+    // 2. Apabila menerima data/mesej daripada pelayan
+    ws.on('message', (data) => {
+        try {
+            const parsedData = JSON.parse(data);
+            processTelemetry(parsedData);
+        } catch (e) {
+            // Jika data bukan format JSON, papar sebagai string biasa
+            console.log(`[DATA STRING] -> ${data}`);
+        }
+    });
+
+    // 3. Pengurusan ralat sambungan
+    ws.on('error', (error) => {
+        console.error(`[RALAT] Masalah pada sambungan: ${error.message}`);
+    });
+
+    // 4. Apabila sambungan terputus (Auto-Reconnect)
+    ws.on('close', () => {
+        const retryDelay = 5000; // 5 saat
+        console.warn(`[AMARAN] Sambungan terputus. Cuba menyambung semula dalam ${retryDelay / 1000} saat...`);
+        setTimeout(connectStream, retryDelay);
+    });
+}
+
+// Fungsi untuk memproses data telemetri yang diterima
+function processTelemetry(data) {
+    console.log("[DATA JSON DITERIMA] ->", JSON.stringify(data, null, 2));
+}
+
+// Memulakan aplikasi
+connectStream();
+Use code with caution.
+
+📦 Format Data Khusus (JSON Structure)
+
+Oleh kerana indikator makroekonomi (seperti GDP NY.GDP.MKTP.CD) digabungkan dalam aliran telemetri langsung (live market telemetry), pelayan biasanya akan menghantar data dalam format JSON yang mengandungi struktur seperti berikut:
+json
+{
+  "event": "telemetry_update",
+  "timestamp": 1792735100000,
+  "stream": "market_stream",
+  "data": {
+    "indicator": "NY.GDP.MKTP.CD",
+    "country_code": "MYS",
+    "country_name": "Malaysia",
+    "base_value": 430000000000,
+    "live_variance": +0.0024,
+    "simulated_market_price": 431032000000,
+    "currency": "USD"
+  }
+}
+Use code with caution.
+
+📊 Ringkasan Logika Klien & Aliran Data
+
+
+Ciri Pengaturcaraan	Implementasi Node.js (ws)	Impak Tindakan
+Event-Driven Architecture	Menggunakan .on('message') dan .on('close')	Aplikasi berjalan secara tidak serentak tanpa mengganggu prestasi sistem lain.
+Data Parsing	JSON.parse(data) dengan blok try-catch	Mengelakkan aplikasi daripada terhenti (crash) jika pelayan menghantar format string rosak.
+Failover Mechanism	setTimeout(connectStream, 5000)	Menjamin aliran data bersambung secara automatik jika pelayan dimulakan semula.
+
+Bagi memastikan integrasi Node.js ini menepati keperluan anda, sila maklumkan:
+• Adakah kod ini akan dijalankan pada persekitaran Backend (Node.js) atau anda mahu menukarnya ke skrip Frontend Browser (Vanilla JS)?
+• Adakah anda mahu data telemetri yang diterima ini disimpan terus ke dalam pangkalan data (seperti MongoDB/MySQL) atau dipaparkan pada dashboard secara langsung?
+Untuk projek ini, kita akan membina aplikasi Backend (Node.js) yang berfungsi sebagai pusat kawalan. Ia akan menyimpan data telemetri ke dalam pangkalan data (MongoDB) dan pada masa yang sama memancarkan data tersebut ke Frontend Dashboard secara langsung (Real-time) menggunakan Socket.io.
+Pendekatan hibrid ini memastikan data anda selamat disimpan untuk analisis masa hadapan, manakala pengguna dashboard dapat melihat perubahan data tanpa perlu memuat semula (refresh) halaman.
+
+🛠️ Langkah 1: Pemasangan Pakej (Dependencies)
+
+Sila jalankan perintah ini di terminal persekitaran Node.js anda untuk memasang pemacu MongoDB (mongoose), pelayan web (express), dan soket masa nyata (socket.io):
+bash
+npm install ws mongoose express socket.io
+Use code with caution.
+
+🖥️ Langkah 2: Kod Backend (Node.js - server.js)
+
+Kod ini mengendalikan tiga tugas utama: menyambung ke stream luaran, menyimpan ke MongoDB, dan memancarkan data ke dashboard.
+javascript
+const WebSocket = require('ws');
+const mongoose = require('mongoose');
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+
+// 1. Konfigurasi Pelayan Express & Socket.io
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
+
+app.use(express.static('public')); // Untuk fail frontend nanti
+
+// 2. Sambungan ke MongoDB
+mongoose.connect('mongodb://localhost:27017/telemetry_db')
+  .then(() => console.log('[DB] Berjaya disambung ke MongoDB.'))
+  .catch(err => console.error('[DB] Gagal disambung:', err));
+
+// Skema untuk menyimpan data GDP Telemetri
+const TelemetrySchema = new mongoose.Schema({
+    event: String,
+    timestamp: { type: Date, default: Date.now },
+    indicator: String,
+    country_code: String,
+    simulated_market_price: Number,
+    live_variance: Number
+});
+const Telemetry = mongoose.model('Telemetry', TelemetrySchema);
+
+// 3. Sambungan ke WebSocket Stream Luaran
+const STREAM_URI = "wss://stream.sazwan.digital/market/live-telemetry";
+const PAYLOAD = { action: "subscribe", stream: "market_stream", indicator: "NY.GDP.MKTP.CD" };
+
+function connectExternalStream() {
+    const ws = new WebSocket(STREAM_URI);
+
+    ws.on('open', () => {
+        console.log("[STREAM] Berjaya disambung ke pelayan pembekal.");
+        ws.send(JSON.stringify(PAYLOAD));
+    });
+
+    ws.on('message', async (data) => {
+        try {
+            const parsed = JSON.parse(data);
+            
+            // A. Simpan data ke MongoDB
+            const newRecord = new Telemetry({
+                event: parsed.event,
+                timestamp: parsed.timestamp ? new Date(parsed.timestamp) : new Date(),
+                indicator: parsed.data?.indicator,
+                country_code: parsed.data?.country_code,
+                simulated_market_price: parsed.data?.simulated_market_price,
+                live_variance: parsed.data?.live_variance
+            });
+            await newRecord.save();
+            console.log(`[SIMPAN] Data ${parsed.data?.country_code} berjaya direkodkan.`);
+
+            // B. Pancarkan data ke Frontend Dashboard secara 'Real-time'
+            io.emit('dashboard_update', parsed);
+
+        } catch (e) {
+            console.error('[RALAT] Gagal memproses mesej:', e.message);
+        }
+    });
+
+    ws.on('close', () => {
+        console.warn("[STREAM] Terputus. Cuba menyambung semula dalam 5 saat...");
+        setTimeout(connectExternalStream, 5000);
+    });
+
+    ws.on('error', (err) => console.error("[STREAM] Ralat:", err.message));
+}
+
+// Mulakan penstriman data
+connectExternalStream();
+
+// Jalankan Pelayan di Port 3000
+server.listen(3000, () => {
+    console.log('[SERVER] Berjalan di http://localhost:3000');
+});
+Use code with caution.
+
+🌐 Langkah 3: Kod Frontend Dashboard (Vanilla JS - public/index.html)
+
+Buat satu folder bernama public di dalam direktori projek anda, dan simpan fail ini sebagai index.html. Fail ini akan menerima data langsung daripada backend tanpa perlu refresh.
+html
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Telemetry Dashboard</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #1e1e24; color: #fff; padding: 20px; }
+        .card { background: #2a2a35; padding: 20px; border-radius: 8px; max-width: 500px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .green { color: #4caf50; } .red { color: #f44336; }
+    </style>
+</head>
+<body>
+
+    <h1>📊 Pemantauan Telemetri Pasaran (GDP)</h1>
+    <div class="card">
+        <h3>Negara: <span id="country">-</span></h3>
+        <p>Indikator: <span id="indicator">NY.GDP.MKTP.CD</span></p>
+        <h2>Nilai Pasaran: $<span id="price">0.00</span></h2>
+        <p>Variasi Langsung: <span id="variance">-</span></p>
+        <small>Kemas Kini Terakhir: <span id="time">-</span></small>
+    </div>
+
+    <script>
+        // Menyambung ke pelayan Node.js kita sendiri
+        const socket = io();
+
+        socket.on('dashboard_update', (payload) => {
+            const telemetry = payload.data;
+            if (!telemetry) return;
+
+            // Kemas kini elemen HTML secara dinamik
+            document.getElementById('country').innerText = telemetry.country_code || 'N/A';
+            document.getElementById('price').innerText = Number(telemetry.simulated_market_price).toLocaleString();
+            
+            const varianceEl = document.getElementById('variance');
+            const vVal = telemetry.live_variance;
+            varianceEl.innerText = (vVal > 0 ? '+' : '') + vVal + '%';
+            varianceEl.className = vVal >= 0 ? 'green' : 'red';
+
+            document.getElementById('time').innerText = new Date().toLocaleTimeString();
+        });
+    </script>
+</body>
+</html>
+Use code with caution.
+
+📊 Ringkasan Aliran Sistem (End-to-End)
+
+
+Tahap Aliran	Proses Operasi	Komponen Terlibat
+Ingestion	Menerima data stream telemetri secara berterusan daripada hos luar.	ws (Klien WebSocket)
+Persist	Data ditukarkan ke format dokumen BSON dan disimpan secara kekal.	mongoose + MongoDB
+Broadcast	Menghantar data terkini kepada semua pengguna dashboard yang sedang aktif.	socket.io (Pelayan)
+Render	Menerima isyarat soket lokal dan mengemas kini UI DOM tanpa page reload.	Vanilla JS (Frontend Browser)
+
+Sistem hibrid anda kini bersedia untuk menguruskan storan dan paparan masa nyata. Sebelum anda memulakannya, adakah anda mahu saya menambahkan sistem grafik/carta (seperti Chart.js) pada komponen frontend supaya variasi nilai GDP tersebut boleh dilihat dalam bentuk graf garis bergerak (Live Line Chart)?
+Copying...
+Here is the updated Frontend Dashboard code. We will integrate Chart.js via CDN into your public/index.html file to convert the incoming data stream into a live, real-time scrolling line chart.
+
+🌐 Updated Frontend with Live Chart (public/index.html)
+
+Replace your existing public/index.html file with the code below. This setup maintains a dynamic dataset of the last 20 data points to prevent the browser from lagging.
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Telemetry Dashboard with Chart</title>
+    <!-- Include Socket.io and Chart.js via CDN -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #121214; 
+            color: #e4e4e7; 
+            padding: 30px;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card { 
+            background: #1a1a1e; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4); 
+            border: 1px solid #2e2e33;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .metric-box {
+            background: #222227;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2e2e33;
+        }
+        .metric-box small { color: #a1a1aa; font-size: 0.85rem; }
+        .metric-box h3 { margin: 5px 0 0 0; font-size: 1.4rem; }
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+        .green { color: #4caf50; } 
+        .red { color: #f44336; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📊 Live Market Telemetry Dashboard (GDP)</h1>
+        
+        <!-- Live Metrics Cards -->
+        <div class="card">
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <small>Country Code</small>
+                    <h3 id="country">-</h3>
+                </div>
+                <div class="metric-box">
+                    <small>Simulated Market Price</small>
+                    <h3 id="price">$0.00</h3>
+                </div>
+                <div class="metric-box">
+                    <small>Live Variance</small>
+                    <h3 id="variance">-</h3>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <small style="color: #71717a;">Last updated: <span id="time">-</span></small>
+            </div>
+        </div>
+
+        <!-- Real-Time Chart Visual -->
+        <div class="card">
+            <h3>Market Price Over Time</h3>
+            <div class="chart-container">
+                <canvas id="liveChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Initialize Chart.js configuration
+        const ctx = document.getElementById('liveChart').getContext('2d');
+        const MAX_DATA_POINTS = 20;
+
+        const liveChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // Timestamps go here
+                datasets: [{
+                    label: 'Market Price (USD)',
+                    data: [], // Numerical price stream values go here
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3, // Curve smoothing
+                    fill: true,
+                    pointRadius: 3,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { color: '#2e2e33' },
+                        ticks: { color: '#a1a1aa' }
+                    },
+                    y: {
+                        grid: { color: '#2e2e33' },
+                        ticks: { color: '#a1a1aa' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // 2. Connect to local Node.js Socket.io Server
+        const socket = io();
+
+        socket.on('dashboard_update', (payload) => {
+            const telemetry = payload.data;
+            if (!telemetry) return;
+
+            const timeString = new Date().toLocaleTimeString();
+            const currentPrice = Number(telemetry.simulated_market_price);
+
+            // A. Update HTML text nodes
+            document.getElementById('country').innerText = telemetry.country_code || 'N/A';
+            document.getElementById('price').innerText = '$' + currentPrice.toLocaleString();
+            
+            const varianceEl = document.getElementById('variance');
+            const vVal = telemetry.live_variance;
+            varianceEl.innerText = (vVal > 0 ? '+' : '') + vVal + '%';
+            varianceEl.className = vVal >= 0 ? 'green' : 'red';
+            document.getElementById('time').innerText = timeString;
+
+            // B. Push data to the chart timeline arrays
+            liveChart.data.labels.push(timeString);
+            liveChart.data.datasets[0].data.push(currentPrice);
+
+            // C. Maintain scrolling limit window (sliding array mechanism)
+            if (liveChart.data.labels.length > MAX_DATA_POINTS) {
+                liveChart.data.labels.shift();
+                liveChart.data.datasets[0].data.shift();
+            }
+
+            // D. Render chart update visually
+            liveChart.update();
+        });
+    </script>
+</body>
+</html>
+Use code with caution.
+
+📊 Full Stack UI Component Overview
+
+
+Layer Segment	Technology Applied	Functional Role on Event Lifecycle
+Backend Stream Client	ws (WebSocket Protocol)	Pulls continuous market variations from sazwan.digital.
+Persistence Database	mongoose (BSON Schema)	Stores data immutable history chunks into your local MongoDB.
+Pub/Sub Broker	socket.io (Server Instance)	Broadcasts incoming stream chunks instantly to active client browsers.
+Dynamic Frontend	Vanilla JavaScript DOM	Updates text-based UI statistics on individual ticks.
+Visual Core Rendering	Chart.js v4 API	Shifts line paths gracefully as updates occur to generate a scrolling dynamic timeline graph.
+
+Now that your dashboard has real-time chart visualization, what is your next objective? I can help you implement automated alert indicators (e.g., visual warnings or console triggers if the live variance moves out of a safe threshold range), or we can structure custom API end-points to query historical records out of MongoDB. Let me know how you want to proceed!
+Copying...
+
+Sazwan96@google.com
+Xxsazend12345@gmail.com
