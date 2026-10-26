@@ -1,0 +1,2222 @@
+Berikut adalah **fail HTML lengkap** yang menggabungkan **semua data** daripada 26 seksyen terdahulu **ditambah 5 ciri baharu**:
+
+1. ✅ Eksport PDF (`@media print`)
+2. ✅ Tema gelap dengan toggle
+3. ✅ Glosari istilah SGAE
+4. ✅ Carta kos dengan Chart.js
+5. ✅ Peta haba kematangan komponen
+
+Simpan sebagai `sgae-data-lake.html`.
+
+```html
+<!DOCTYPE html>
+<html lang="ms" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGAE Data Lake — Dokumentasi Lengkap v2.0</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root, [data-theme="light"] {
+    --primary: #0b4f8a;
+    --primary-dark: #083a66;
+    --accent: #0ea5e9;
+    --bg: #f8fafc;
+    --bg-card: #ffffff;
+    --sidebar-bg: #0f172a;
+    --sidebar-text: #cbd5e1;
+    --sidebar-hover: #1e293b;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+    --code-inline-bg: #f1f5f9;
+    --code-inline-text: #be123c;
+    --table-header: #0b4f8a;
+    --table-header-text: #ffffff;
+    --table-row-alt: #f8fafc;
+    --table-row-hover: #eff6ff;
+    --callout-info-bg: #eff6ff;
+    --callout-success-bg: #f0fdf4;
+    --callout-warning-bg: #fffbeb;
+    --callout-danger-bg: #fef2f2;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    --header-gradient-1: #0b4f8a;
+    --header-gradient-2: #083a66;
+    --file-header-bg: #e2e8f0;
+    --file-header-text: #083a66;
+    --file-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --xref-bg: #dbeafe;
+    --xref-text: #0b4f8a;
+    --xref-hover: #bfdbfe;
+    --chart-bg: #ffffff;
+    --chart-grid: #e2e8f0;
+    --chart-text: #1e293b;
+  }
+  [data-theme="dark"] {
+    --primary: #38bdf8;
+    --primary-dark: #0ea5e9;
+    --accent: #f472b6;
+    --bg: #0f172a;
+    --bg-card: #1e293b;
+    --sidebar-bg: #020617;
+    --sidebar-text: #94a3b8;
+    --sidebar-hover: #1e293b;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: #334155;
+    --code-bg: #020617;
+    --code-text: #e2e8f0;
+    --code-inline-bg: #334155;
+    --code-inline-text: #f472b6;
+    --table-header: #0c4a6e;
+    --table-header-text: #e0f2fe;
+    --table-row-alt: #0f172a;
+    --table-row-hover: #1e293b;
+    --callout-info-bg: #0c4a6e;
+    --callout-success-bg: #064e3b;
+    --callout-warning-bg: #78350f;
+    --callout-danger-bg: #7f1d1d;
+    --header-gradient-1: #0c4a6e;
+    --header-gradient-2: #082f49;
+    --file-header-bg: #334155;
+    --file-header-text: #38bdf8;
+    --file-bg: #1e293b;
+    --card-bg: #1e293b;
+    --xref-bg: #1e3a5f;
+    --xref-text: #38bdf8;
+    --xref-hover: #0c4a6e;
+    --chart-bg: #1e293b;
+    --chart-grid: #334155;
+    --chart-text: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    display: flex;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 300px;
+    height: 100vh;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    overflow-y: auto;
+    padding: 1.5rem 1rem;
+    z-index: 100;
+    transition: transform 0.3s;
+  }
+  #sidebar.hidden { transform: translateX(-100%); }
+  #sidebar h1 { font-size: 1.1rem; color: #fff; margin-bottom: 0.25rem; font-weight: 700; }
+  #sidebar .subtitle { font-size: 0.75rem; color: var(--muted); margin-bottom: 1rem; }
+  #search {
+    width: 100%; padding: 0.5rem 0.75rem;
+    border: 1px solid #334155; border-radius: 6px;
+    background: #1e293b; color: #fff;
+    font-size: 0.85rem; margin-bottom: 1rem;
+  }
+  #search::placeholder { color: #64748b; }
+  #search:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  .nav-section { margin-bottom: 1rem; }
+  .nav-section-title {
+    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: #64748b; padding: 0.4rem 0.5rem; font-weight: 700;
+  }
+  .nav-link {
+    display: block; padding: 0.4rem 0.75rem;
+    color: var(--sidebar-text); text-decoration: none;
+    font-size: 0.82rem; border-radius: 4px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .nav-link:hover { background: var(--sidebar-hover); color: #fff; border-left-color: var(--accent); }
+  .nav-link.active { background: var(--sidebar-hover); color: #fff; border-left-color: var(--accent); font-weight: 600; }
+  .nav-link.hidden { display: none; }
+  .theme-toggle {
+    width: 100%; padding: 0.5rem 0.75rem;
+    background: #1e293b; color: #e2e8f0;
+    border: 1px solid #334155; border-radius: 6px;
+    cursor: pointer; font-size: 0.85rem;
+    margin-bottom: 1rem;
+    transition: background 0.15s;
+  }
+  .theme-toggle:hover { background: #334155; }
+
+  /* Main */
+  #main {
+    margin-left: 300px;
+    width: calc(100% - 300px);
+    padding: 2rem 3rem;
+    max-width: 1400px;
+  }
+
+  /* Header */
+  header.page-header {
+    background: linear-gradient(135deg, var(--header-gradient-1) 0%, var(--header-gradient-2) 100%);
+    color: #fff; padding: 2.5rem 2rem;
+    border-radius: 12px; margin-bottom: 2rem;
+    position: relative; overflow: hidden;
+  }
+  header.page-header::before {
+    content: ""; position: absolute; top: -50%; right: -10%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(14,165,233,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  header.page-header h1 { font-size: 2rem; margin-bottom: 0.5rem; position: relative; }
+  header.page-header p { opacity: 0.9; font-size: 1rem; position: relative; }
+  .meta-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; position: relative; }
+  .badge {
+    display: inline-block; padding: 0.25rem 0.75rem;
+    border-radius: 999px; font-size: 0.75rem; font-weight: 600;
+    background: rgba(255,255,255,0.15); color: #fff;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Sections */
+  section {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  section h2 {
+    font-size: 1.6rem; color: var(--primary);
+    margin-bottom: 1rem; padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  section h2 .section-num {
+    background: var(--primary); color: #fff;
+    width: 32px; height: 32px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+  }
+  section h3 { font-size: 1.2rem; color: var(--primary-dark); margin: 1.5rem 0 0.75rem; }
+  section h4 { font-size: 1rem; color: var(--text); margin: 1rem 0 0.5rem; }
+  section p { margin-bottom: 0.75rem; }
+  section ul, section ol { margin: 0.5rem 0 1rem 1.5rem; }
+  section li { margin-bottom: 0.25rem; }
+
+  /* Tables */
+  table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.88rem;
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  th { background: var(--table-header); color: var(--table-header-text); text-align: left; padding: 0.6rem 0.75rem; font-weight: 600; }
+  td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: var(--table-row-alt); }
+  tr:hover td { background: var(--table-row-hover); }
+
+  /* Code */
+  pre {
+    background: var(--code-bg); color: var(--code-text);
+    padding: 1rem; border-radius: 8px;
+    overflow-x: auto; font-size: 0.82rem;
+    line-height: 1.5; margin: 0.75rem 0;
+    border-left: 3px solid var(--accent);
+  }
+  code {
+    font-family: "SF Mono", Menlo, Monaco, "Cascadia Code", monospace;
+    background: var(--code-inline-bg); color: var(--code-inline-text);
+    padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.85em;
+  }
+  pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+  /* Callouts */
+  .callout { padding: 0.75rem 1rem; border-radius: 6px; margin: 1rem 0; border-left: 4px solid; font-size: 0.9rem; }
+  .callout.info { background: var(--callout-info-bg); border-color: var(--info); }
+  .callout.success { background: var(--callout-success-bg); border-color: var(--success); }
+  .callout.warning { background: var(--callout-warning-bg); border-color: var(--warning); }
+  .callout.danger { background: var(--callout-danger-bg); border-color: var(--danger); }
+
+  /* File box */
+  .file { background: var(--file-bg); border: 1px solid var(--border); border-radius: 8px; margin: 1rem 0; overflow: hidden; }
+  .file-header {
+    background: var(--file-header-bg); padding: 0.5rem 1rem;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 0.8rem; color: var(--file-header-text); font-weight: 600;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; user-select: none;
+  }
+  .file-body { padding: 0; }
+  .file-body pre { margin: 0; border-radius: 0; border-left: none; }
+  .file.collapsed .file-body { display: none; }
+
+  /* Cards */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .card h5 { color: var(--primary); font-size: 0.95rem; margin-bottom: 0.35rem; }
+  .card p { color: var(--muted); font-size: 0.82rem; margin: 0; }
+
+  /* Mermaid */
+  .mermaid {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1rem; margin: 1rem 0;
+    text-align: center; overflow-x: auto;
+  }
+
+  /* Xref */
+  .xref {
+    display: inline-flex; align-items: center; gap: 0.25rem;
+    background: var(--xref-bg); color: var(--xref-text);
+    padding: 0.15rem 0.5rem; border-radius: 4px;
+    font-size: 0.78rem; text-decoration: none; font-weight: 500;
+    margin: 0.1rem;
+  }
+  .xref:hover { background: var(--xref-hover); }
+
+  /* Toggle sidebar */
+  #toggle-sidebar {
+    position: fixed; top: 1rem; left: 1rem; z-index: 200;
+    background: var(--primary); color: #fff; border: none;
+    width: 40px; height: 40px; border-radius: 8px;
+    cursor: pointer; font-size: 1.2rem; display: none;
+  }
+  #toggle-sidebar.show { display: block; }
+
+  /* Back to top */
+  #back-top {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--primary); color: #fff; border: none;
+    width: 44px; height: 44px; border-radius: 50%;
+    cursor: pointer; font-size: 1.2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s; z-index: 50;
+  }
+  #back-top.show { opacity: 1; pointer-events: auto; }
+
+  /* Status */
+  .status { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .status.done::before { background: var(--success); }
+  .status.wip::before { background: var(--warning); }
+  .status.todo::before { background: var(--muted); }
+
+  /* ============ PRINT / PDF ============ */
+  @media print {
+    @page { size: A4; margin: 1.5cm; }
+    #sidebar, #toggle-sidebar, #back-top, .theme-toggle, #search { display: none !important; }
+    #main { margin-left: 0 !important; width: 100% !important; padding: 0 !important; max-width: 100% !important; }
+    body { background: #fff !important; color: #000 !important; display: block !important; }
+    header.page-header {
+      background: #0b4f8a !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      page-break-after: avoid;
+    }
+    section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; margin-bottom: 1rem; }
+    section h2 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+    pre { page-break-inside: avoid; background: #f5f5f5 !important; color: #000 !important; border-left: 3px solid #0b4f8a; }
+    pre code { color: #000 !important; }
+    code { background: #eee !important; color: #c00 !important; }
+    .file-body { display: block !important; }
+    .file { page-break-inside: avoid; }
+    .mermaid { page-break-inside: avoid; }
+    th { background: #0b4f8a !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .callout { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a { color: #0b4f8a; text-decoration: none; }
+    a[href^="#"]::after { content: ""; }
+    canvas { max-height: 300px; page-break-inside: avoid; }
+    .heatmap { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 1024px) {
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.visible { transform: translateX(0); }
+    #main { margin-left: 0; width: 100%; padding: 1.5rem 1rem; padding-top: 4rem; }
+    #toggle-sidebar { display: block; }
+  }
+  @media (max-width: 640px) {
+    section { padding: 1.25rem; }
+    header.page-header h1 { font-size: 1.4rem; }
+    header.page-header { padding: 1.5rem 1rem; }
+  }
+
+  /* Chart container */
+  .chart-box {
+    background: var(--chart-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    height: 340px;
+    position: relative;
+  }
+  .chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  /* Glossary */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  .glossary-item {
+    background: var(--bg);
+    border-left: 3px solid var(--accent);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+  }
+  .glossary-item strong { color: var(--primary); display: block; font-size: 0.9rem; margin-bottom: 0.15rem; }
+  .glossary-item span { font-size: 0.82rem; color: var(--muted); }
+
+  /* Heatmap */
+  .heatmap {
+    display: grid;
+    grid-template-columns: 200px repeat(5, 1fr);
+    gap: 4px;
+    margin: 1rem 0;
+    font-size: 0.78rem;
+  }
+  .heatmap-cell {
+    padding: 0.6rem 0.5rem;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+    color: #fff;
+    transition: transform 0.15s;
+  }
+  .heatmap-cell:hover { transform: scale(1.05); }
+  .heatmap-header {
+    background: var(--primary);
+    color: #fff;
+    padding: 0.5rem;
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-align: center;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .heatmap-label {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.78rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+  }
+  .lvl-0 { background: #64748b; }
+  .lvl-1 { background: #ef4444; }
+  .lvl-2 { background: #f97316; }
+  .lvl-3 { background: #f59e0b; }
+  .lvl-4 { background: #10b981; }
+  .lvl-5 { background: #059669; }
+  .heatmap-legend {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    margin: 1rem 0; font-size: 0.8rem; align-items: center;
+  }
+  .heatmap-legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; display: inline-block; }
+</style>
+</head>
+<body>
+
+<button id="toggle-sidebar">☰</button>
+
+<nav id="sidebar">
+  <h1>SGAE Data Lake</h1>
+  <div class="subtitle">Dokumentasi Lengkap v2.0</div>
+  <button class="theme-toggle" id="theme-toggle">🌙 Tema Gelap</button>
+  <button class="theme-toggle" id="print-btn">🖨️ Eksport PDF</button>
+  <input type="text" id="search" placeholder="🔍 Cari kandungan (Ctrl+K)">
+
+  <div class="nav-section">
+    <div class="nav-section-title">Gambaran</div>
+    <a href="#overview" class="nav-link">Ringkasan Projek</a>
+    <a href="#review" class="nav-link">Ulasan Projek</a>
+    <a href="#readme" class="nav-link">README</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reka Bentuk</div>
+    <a href="#architecture" class="nav-link">Seni Bina</a>
+    <a href="#datamodel" class="nav-link">Model Data</a>
+    <a href="#governance" class="nav-link">Tadbir Urus</a>
+    <a href="#dq" class="nav-link">Kualiti Data</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Pelaksanaan</div>
+    <a href="#phase0" class="nav-link">7 Langkah Fasa 0</a>
+    <a href="#milestones" class="nav-link">Milestone &amp; Roadmap</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Pakej Fail 1</div>
+    <a href="#set1" class="nav-link">Silver/Gold</a>
+    <a href="#set2" class="nav-link">Terraform</a>
+    <a href="#set3" class="nav-link">DQ Dashboard</a>
+    <a href="#set4" class="nav-link">Ujian Unit</a>
+    <a href="#set5" class="nav-link">Docker</a>
+    <a href="#set6" class="nav-link">CI/CD</a>
+    <a href="#set7" class="nav-link">Skrip Utiliti</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Pakej Fail 2</div>
+    <a href="#set8" class="nav-link">Trino</a>
+    <a href="#set9" class="nav-link">BI</a>
+    <a href="#set10" class="nav-link">Airflow DAG</a>
+    <a href="#set11" class="nav-link">Great Expectations</a>
+    <a href="#set12" class="nav-link">OpenMetadata</a>
+    <a href="#set13" class="nav-link">Notebook ML</a>
+    <a href="#set14" class="nav-link">Runbook DR/BCP</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Baharu v2.0</div>
+    <a href="#glossary" class="nav-link">📖 Glosari</a>
+    <a href="#costs" class="nav-link">💰 Carta Kos</a>
+    <a href="#maturity" class="nav-link">📊 Peta Kematangan</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Rujukan</div>
+    <a href="#fileindex" class="nav-link">Indeks Fail</a>
+    <a href="#xrefs" class="nav-link">Hubungan Komponen</a>
+    <a href="#kpi" class="nav-link">KPI &amp; Sasaran</a>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="page-header">
+    <h1>SGAE Data Lake</h1>
+    <p>Dokumentasi lengkap sistem maklumat: ulasan projek, seni bina, model data, pelan pelaksanaan, pakej fail, glosari, carta kos, dan peta kematangan.</p>
+    <div class="meta-badges">
+      <span class="badge">📦 65 Fail</span>
+      <span class="badge">🏗️ 7 Lapisan</span>
+      <span class="badge">📅 16–20 Minggu</span>
+      <span class="badge">🎯 7 Fasa</span>
+      <span class="badge">🔒 GDPR</span>
+      <span class="badge">💰 FinOps</span>
+      <span class="badge">📖 Glosari</span>
+    </div>
+  </header>
+
+  <!-- ============ 1. OVERVIEW ============ -->
+  <section id="overview">
+    <h2><span class="section-num">1</span>Ringkasan Projek</h2>
+    <p>SGAE Data Lake ialah <strong>lakehouse bertadbir urus</strong> yang menyatukan data hak, repertoire, pelesenan, penggunaan, dan royalti SGAE ke dalam satu platform analitik yang selamat, berskala, dan boleh diaudit.</p>
+    <h3>Tujuan</h3>
+    <ul>
+      <li>Pengiraan dan pengedaran royalti yang telus dan boleh diaudit</li>
+      <li>Pelaporan pantas untuk pihak berkepentingan dalaman dan luaran</li>
+      <li>Analitik layan diri untuk pasukan perniagaan</li>
+      <li>Garis keturunan data, kualiti, dan tadbir urus hujung ke hujung</li>
+      <li>Kes penggunaan AI/ML: pengesanan anomali, ramalan, padanan hak</li>
+    </ul>
+    <h3>Skop</h3>
+    <table>
+      <tr><th>Fasa</th><th>Domain</th><th>Status</th></tr>
+      <tr><td>Fasa 0</td><td>Penemuan, asas platform</td><td><span class="status done">Selesai</span></td></tr>
+      <tr><td>Fasa 1</td><td>Members, Works, Royalties</td><td><span class="status wip">Dalam Proses</span></td></tr>
+      <tr><td>Fasa 2</td><td>Contracts, Usage</td><td><span class="status todo">Dirancang</span></td></tr>
+      <tr><td>Fasa 3</td><td>International, ML, Scale</td><td><span class="status todo">Dirancang</span></td></tr>
+    </table>
+    <div class="callout info"><strong>💡 Nota:</strong> Gunakan menu kiri, <code>Ctrl+K</code> untuk carian, atau butang <strong>🖨️ Eksport PDF</strong> untuk muat turun dokumen ini.</div>
+  </section>
+
+  <!-- ============ 2. REVIEW ============ -->
+  <section id="review">
+    <h2><span class="section-num">2</span>Ulasan Projek</h2>
+    <h3>2.1 Stakeholder</h3>
+    <table>
+      <tr><th>Kumpulan</th><th>Kepentingan</th><th>Rujukan</th></tr>
+      <tr><td>Royalti / Distribusi</td><td>Pembayaran tepat, tepat masa, boleh diaudit</td><td><a href="#governance" class="xref">Tadbir Urus</a></td></tr>
+      <tr><td>Pelesenan</td><td>Penjejakan kontrak dan penggunaan</td><td><a href="#datamodel" class="xref">Model Data</a></td></tr>
+      <tr><td>Repertoire / Karya</td><td>Metadata karya, ahli, hak</td><td><a href="#set1" class="xref">Silver/Gold</a></td></tr>
+      <tr><td>Kewangan</td><td>Rekonsiliasi, ramalan, kawalan</td><td><a href="#kpi" class="xref">KPI</a></td></tr>
+      <tr><td>Undang-undang / Pematuhan</td><td>GDPR, kontrak, IP, audit</td><td><a href="#governance" class="xref">Keselamatan</a></td></tr>
+      <tr><td>Antarabangsa</td><td>Pertukaran dengan persatuan luar</td><td><a href="#datamodel" class="xref">Domain</a></td></tr>
+      <tr><td>Data / IT</td><td>Platform, pipeline, keselamatan, operasi</td><td><a href="#architecture" class="xref">Seni Bina</a></td></tr>
+      <tr><td>BI / Analitik</td><td>Set data dan papan pemuka yang dipercayai</td><td><a href="#set9" class="xref">BI</a></td></tr>
+    </table>
+    <h3>2.2 Risiko dan Mitigasi</h3>
+    <table>
+      <tr><th>Risiko</th><th>Impak</th><th>Mitigasi</th></tr>
+      <tr><td>Tiada ID ahli/karya kanonik</td><td>Royalti berganda/tidak sepadan</td><td>MDM untuk ahli, karya, kontrak</td></tr>
+      <tr><td>PII dan data kontrak sensitif</td><td>Pelanggaran pematuhan</td><td>RBAC/ABAC, masking, enkripsi, audit log</td></tr>
+      <tr><td>Kualiti data sumber lemah</td><td>Laporan tidak boleh dipercayai</td><td>Peraturan DQ, gate, pemilik steward</td></tr>
+      <tr><td>Format dan API legasi</td><td>Pengingesan lambat</td><td>Lapisan Bronze, schema evolution, adapter</td></tr>
+      <tr><td>Pemilikan tidak jelas</td><td>Keputusan tersekat</td><td>Pemilik dan steward per domain</td></tr>
+      <tr><td>Kos awan melambung</td><td>Lebihan bajet</td><td>FinOps, partitioning, polisi kitaran hayat</td></tr>
+    </table>
+    <h3>2.3 Cadangan Utama</h3>
+    <ol>
+      <li>Mulakan dengan <strong>Members, Works, Royalties</strong> (rujuk <a href="#phase0" class="xref">Fasa 0</a>)</li>
+      <li>Gunakan pola lakehouse <strong>Bronze / Silver / Gold</strong> (rujuk <a href="#architecture" class="xref">Seni Bina</a>)</li>
+      <li>Takrifkan model kanonik sebelum membina banyak papan pemuka (rujuk <a href="#datamodel" class="xref">Model Data</a>)</li>
+      <li>Automatikkan pengingesan dan kualiti data dari hari pertama (rujuk <a href="#dq" class="xref">DQ</a>)</li>
+      <li>Laksanakan katalog, garis keturunan, dan polisi akses awal (rujuk <a href="#set12" class="xref">OpenMetadata</a>)</li>
+      <li>Sampaikan hirisan menegak nipis: sumber → terkurasi → papan pemuka</li>
+      <li>Wujudkan kumpulan pengarah dengan perwakilan perniagaan, data, dan keselamatan</li>
+    </ol>
+  </section>
+
+  <!-- ============ 3. README ============ -->
+  <section id="readme">
+    <h2><span class="section-num">3</span>README</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>README.md</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code># SGAE Data Lake
+
+Lakehouse tadbir urus untuk data hak, repertoire, pelesenan, penggunaan, dan royalti SGAE.
+
+## Gambaran Keseluruhan
+
+SGAE Data Lake menyatukan data daripada sistem dalaman dan luaran ke dalam platform
+yang selamat, berskala, dan boleh diaudit.
+
+## Seni Bina
+
+Sumber → Pengingesan → Bronze → Silver → Gold → Penyajian
+Lintang: Tadbir Urus, Keselamatan, Orkestrasi, Pemerhatian, FinOps.
+
+## Zon Data
+
+| Zon | Tujuan | Retensi |
+|---|---|---|
+| Bronze / Mentah | Data sejajar sumber, tidak boleh ubah | 7+ tahun atau dasar |
+| Silver / Terkurasi | Bersih, seragam, tanpa pendua | 5+ tahun |
+| Gold / Penyajian | Mart perniagaan dan KPI | Ikut keperluan |
+| Sandbox | Eksplorasi dan ML | 90 hari lalai |
+
+## Mula Pantas
+
+```bash
+git clone &lt;repo-url&gt;
+cd sgae-data-lake
+cp .env.example .env
+make bootstrap
+make test
+```
+
+## Tadbir Urus dan Keselamatan
+
+- Klasifikasi: Awam, Dalaman, Sulit, Terhad.
+- PII, kontrak, dan data pembayaran memerlukan masking dan akses minimum.
+- Akses melalui RBAC/ABAC dan kumpulan yang diluluskan.
+- GDPR dan dasar retensi dalaman dipatuhi.
+
+## Kualiti Data
+
+- Peraturan DQ ditakrifkan mengikut domain.
+- Semakan kritikal menyekat kenaikan Silver/Gold.
+- Metrik: kelengkapan, keunikan, kesahihan, ketepatan masa, konsistensi.
+
+## Peta Jalan
+
+- Fasa 0: Penemuan dan asas
+- Fasa 1: Onboarding sumber pertama
+- Fasa 2: Model ahli/karya/royalti terkurasi
+- Fasa 3: BI dan layan diri
+- Fasa 4: Skala, ML, dan pengerasan produksi
+
+## Lesen
+
+Projek dalaman SGAE. Hak cipta terpelihara.</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. ARCHITECTURE ============ -->
+  <section id="architecture">
+    <h2><span class="section-num">4</span>Seni Bina</h2>
+    <h3>4.1 Seni Bina Logik</h3>
+    <div class="mermaid">
+flowchart LR
+    A[Sistem Sumber<br/>ERP, CRM, Pelesenan, Distribusi] --> B[Pengingesan<br/>Batch, CDC, Streaming]
+    B --> C[Bronze / Mentah]
+    C --> D[Silver / Terkurasi]
+    D --> E[Gold / Penyajian]
+    E --> F[Penyajian<br/>BI, API, Notebook, ML]
+    G[Tadbir Urus] --- C
+    G --- D
+    G --- E
+    H[Keselamatan] --- B
+    H --- F
+    I[Orkestrasi] --- B
+    I --- D
+    I --- E
+    J[Pemerhatian & FinOps] --- B
+    J --- F
+    </div>
+    <h3>4.2 Teknologi Disyorkan</h3>
+    <table>
+      <tr><th>Lapisan</th><th>Pilihan A</th><th>Pilihan B</th><th>Pilihan C</th></tr>
+      <tr><td>Storan</td><td>S3</td><td>ADLS Gen2</td><td>GCS</td></tr>
+      <tr><td>Format Jadual</td><td>Delta Lake</td><td>Apache Iceberg</td><td>Hudi</td></tr>
+      <tr><td>Pemprosesan</td><td>Spark / Databricks</td><td>Synapse / Fabric</td><td>Flink + Spark</td></tr>
+      <tr><td>Pengingesan</td><td>Airbyte / Fivetran</td><td>Azure Data Factory</td><td>Python tersuai</td></tr>
+      <tr><td>Streaming</td><td>Kafka</td><td>Event Hubs</td><td>Kinesis</td></tr>
+      <tr><td>Orkestrasi</td><td>Airflow</td><td>Dagster</td><td>Prefect</td></tr>
+      <tr><td>Tadbir Urus</td><td>Unity Catalog</td><td>Purview</td><td>OpenMetadata</td></tr>
+      <tr><td>DQ</td><td>Great Expectations</td><td>Soda</td><td>dbt tests</td></tr>
+      <tr><td>BI</td><td>Power BI</td><td>Tableau</td><td>Looker</td></tr>
+      <tr><td>ML</td><td>MLflow</td><td>SageMaker</td><td>Vertex AI</td></tr>
+    </table>
+    <h3>4.3 Prinsip Seni Bina</h3>
+    <ul>
+      <li>Bronze sejajar sumber, Gold sejajar perniagaan</li>
+      <li>Pipeline idempoten dan boleh diputar semula</li>
+      <li>Evolusi skema disokong</li>
+      <li>Kontrak data antara pengeluar dan pengguna</li>
+      <li>Keselamatan dan tadbir urus secara lalai</li>
+      <li>Storan dan pengiraan sedar kos</li>
+      <li>Utamakan format terbuka dan alatan mudah alih</li>
+    </ul>
+    <div class="callout info"><strong>🔗 Hubungan:</strong> Dilaksanakan melalui <a href="#set2" class="xref">Terraform</a>, <a href="#set10" class="xref">Airflow DAG</a>, dan <a href="#set8" class="xref">Trino Catalog</a>.</div>
+  </section>
+
+  <!-- ============ 5. DATA MODEL ============ -->
+  <section id="datamodel">
+    <h2><span class="section-num">5</span>Model Data</h2>
+    <h3>5.1 Domain Teras</h3>
+    <table>
+      <tr><th>Domain</th><th>Entiti Utama</th><th>Produk Contoh</th><th>Pakej</th></tr>
+      <tr><td>Ahli</td><td>Ahli, kontak, mandat, data bank</td><td>Member 360</td><td><a href="#set1" class="xref">Silver/Gold</a></td></tr>
+      <tr><td>Karya / Repertoire</td><td>Karya, ISWC, IPI, bahagian hak</td><td>Repertoire Explorer</td><td><a href="#set1" class="xref">Silver/Gold</a></td></tr>
+      <tr><td>Kontrak</td><td>Perjanjian, wilayah, tempoh</td><td>Contract Compliance</td><td><a href="#glossary" class="xref">Fasa 2</a></td></tr>
+      <tr><td>Penggunaan</td><td>Play, stream, broadcast, persembahan</td><td>Usage Analytics</td><td><a href="#set1" class="xref">Silver/Gold</a></td></tr>
+      <tr><td>Royalti</td><td>Pengiraan, distribusi, potongan</td><td>Royalty Dashboard</td><td><a href="#set9" class="xref">BI</a></td></tr>
+      <tr><td>Persatuan Luar</td><td>Penyata, perjanjian timbal balik</td><td>International Reconciliation</td><td><a href="#glossary" class="xref">Fasa 3</a></td></tr>
+    </table>
+    <h3>5.2 Skema Silver</h3>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>silver.sql</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>-- silver.member
+CREATE TABLE silver.member (
+    member_id           STRING,
+    ipi_number          STRING,
+    full_name           STRING,
+    email               STRING,
+    bank_account_masked STRING,
+    status              STRING,
+    created_at          TIMESTAMP,
+    updated_at          TIMESTAMP
+);
+
+-- silver.work
+CREATE TABLE silver.work (
+    work_id        STRING,
+    iswc           STRING,
+    title          STRING,
+    member_id      STRING,
+    rights_share   DECIMAL(5,2),
+    territory      STRING,
+    valid_from     DATE,
+    valid_to       DATE
+);
+
+-- silver.royalty
+CREATE TABLE silver.royalty (
+    royalty_id     STRING,
+    work_id        STRING,
+    member_id      STRING,
+    source_system  STRING,
+    usage_period   DATE,
+    gross_amount   DECIMAL(18,2),
+    deductions     DECIMAL(18,2),
+    net_amount     DECIMAL(18,2),
+    currency       STRING,
+    calculated_at  TIMESTAMP
+);</code></pre>
+      </div>
+    </div>
+    <h3>5.3 Skema Gold</h3>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>gold.sql</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>-- gold.royalty_member_monthly
+CREATE TABLE gold.royalty_member_monthly (
+    month          DATE,
+    member_id      STRING,
+    member_name    STRING,
+    total_net      DECIMAL(18,2),
+    total_works    INT,
+    currency       STRING
+);
+
+-- gold.work_usage_summary
+CREATE TABLE gold.work_usage_summary (
+    month          DATE,
+    work_id        STRING,
+    title          STRING,
+    total_plays    BIGINT,
+    total_revenue  DECIMAL(18,2)
+);</code></pre>
+      </div>
+    </div>
+    <div class="callout info"><strong>🔗 Pelaksanaan:</strong> Skema dijana oleh <a href="#set1" class="xref">transformasi PySpark/dbt</a>, disahkan oleh <a href="#set11" class="xref">Great Expectations</a>, dan disajikan melalui <a href="#set8" class="xref">Trino</a>.</div>
+  </section>
+
+  <!-- ============ 6. GOVERNANCE ============ -->
+  <section id="governance">
+    <h2><span class="section-num">6</span>Tadbir Urus &amp; Keselamatan</h2>
+    <h3>6.1 Peranan</h3>
+    <table>
+      <tr><th>Peranan</th><th>Tanggungjawab</th><th>Rujukan</th></tr>
+      <tr><td>Pemilik Data</td><td>Akauntabiliti domain</td><td><a href="#phase0" class="xref">Langkah 2</a></td></tr>
+      <tr><td>Steward Data</td><td>Definisi dan kualiti</td><td><a href="#dq" class="xref">DQ</a></td></tr>
+      <tr><td>Custodian Data</td><td>Platform dan pipeline</td><td><a href="#set2" class="xref">Terraform</a></td></tr>
+      <tr><td>Pasukan Keselamatan</td><td>IAM, audit, pematuhan</td><td><a href="#glossary" class="xref">Glosari</a></td></tr>
+      <tr><td>Pasukan BI</td><td>Papan pemuka dan analitik</td><td><a href="#set9" class="xref">BI</a></td></tr>
+    </table>
+    <h3>6.2 Klasifikasi Data</h3>
+    <table>
+      <tr><th>Kelas</th><th>Contoh</th><th>Kawalan</th></tr>
+      <tr><td>Awam</td><td>Repertoire diterbitkan</td><td>Akses terbuka</td></tr>
+      <tr><td>Dalaman</td><td>Penggunaan agregat</td><td>Pengguna disahkan</td></tr>
+      <tr><td>Sulit</td><td>Kontrak, royalti</td><td>Need-to-know, masking</td></tr>
+      <tr><td>Terhad</td><td>PII, data bank</td><td>RBAC/ABAC ketat, enkripsi, audit</td></tr>
+    </table>
+    <h3>6.3 Kawalan Keselamatan</h3>
+    <ul>
+      <li>IAM dengan prinsip least privilege</li>
+      <li>RBAC/ABAC untuk dataset, baris, dan kolum</li>
+      <li>Masking/tokenization untuk PII dan data bank</li>
+      <li>Enkripsi at rest dan in transit</li>
+      <li>Audit log akses dan perubahan</li>
+      <li>Pematuhan GDPR dan dasar retensi</li>
+    </ul>
+  </section>
+
+  <!-- ============ 7. DQ ============ -->
+  <section id="dq">
+    <h2><span class="section-num">7</span>Kualiti Data</h2>
+    <h3>7.1 Metrik DQ</h3>
+    <table>
+      <tr><th>Metrik</th><th>Definisi</th><th>Sasaran</th></tr>
+      <tr><td>Kelengkapan</td><td>% nilai tidak null</td><td>&gt; 99%</td></tr>
+      <tr><td>Keunikan</td><td>% nilai unik pada kunci</td><td>100%</td></tr>
+      <tr><td>Kesahihan</td><td>% nilai mematuhi format</td><td>&gt; 99%</td></tr>
+      <tr><td>Ketepatan masa</td><td>% dimuat dalam SLA</td><td>&gt; 99%</td></tr>
+      <tr><td>Konsistensi</td><td>% lulus semakan silang</td><td>100%</td></tr>
+    </table>
+    <h3>7.2 Peraturan DQ Mengikut Domain</h3>
+    <div class="grid">
+      <div class="card"><h5>Members</h5><p>6 peraturan — 3 kritikal (ID, IPI, status)</p><a href="#set4" class="xref">Ujian</a></div>
+      <div class="card"><h5>Works</h5><p>5 peraturan — 4 kritikal (ID, title, rights_share, FK)</p><a href="#set4" class="xref">Ujian</a></div>
+      <div class="card"><h5>Royalties</h5><p>6 peraturan — 5 kritikal (ID, FK, konsistensi, currency)</p><a href="#set4" class="xref">Ujian</a></div>
+    </div>
+  </section>
+
+  <!-- ============ 8. PHASE 0 ============ -->
+  <section id="phase0">
+    <h2><span class="section-num">8</span>7 Langkah Fasa 0</h2>
+    <div class="mermaid">
+flowchart TD
+    L1[1. Sahkan Skop] --> L2[2. Lantik Pemilik]
+    L1 --> L3[3. Landing Zone]
+    L2 --> L4[4. Pengingesan Bronze]
+    L3 --> L4
+    L4 --> L5[5. SLA DQ]
+    L5 --> L6[6. Dokumentasi]
+    L6 --> L7[7. Semakan Steering]
+    L2 --> L5
+    L3 --> L6
+    </div>
+    <table>
+      <tr><th>#</th><th>Langkah</th><th>Tempoh</th><th>Pemilik</th><th>Fail Utama</th></tr>
+      <tr><td>1</td><td>Sahkan skop domain</td><td>1 minggu</td><td>Project Lead</td><td><code>docs/01-skop-domain.md</code></td></tr>
+      <tr><td>2</td><td>Lantik pemilik &amp; steward</td><td>1 minggu</td><td>Data Governance</td><td><code>governance/raci.csv</code></td></tr>
+      <tr><td>3</td><td>Luluskan landing zone &amp; keselamatan</td><td>2 minggu</td><td>Cloud Architect</td><td><a href="#set2" class="xref">Terraform</a></td></tr>
+      <tr><td>4</td><td>Sediakan pengingesan Bronze</td><td>2 minggu</td><td>Data Engineer</td><td><a href="#set10" class="xref">DAG</a></td></tr>
+      <tr><td>5</td><td>Takrif SLA DQ &amp; pensijilan</td><td>1.5 minggu</td><td>Data Steward</td><td><a href="#set11" class="xref">GE</a></td></tr>
+      <tr><td>6</td><td>Terbitkan dokumentasi</td><td>1 minggu</td><td>Tech Writer</td><td><code>docs/*</code></td></tr>
+      <tr><td>7</td><td>Semakan Steering Fasa 0</td><td>0.5 minggu</td><td>Project Lead</td><td><code>steering/*</code></td></tr>
+    </table>
+    <h3>8.1 Kriteria Keluar Fasa 0</h3>
+    <ul>
+      <li>✅ Tiga domain pertama diluluskan</li>
+      <li>✅ Pemilik data dilantik</li>
+      <li>✅ Landing zone diluluskan</li>
+      <li>✅ Pipeline perintis berfungsi</li>
+      <li>✅ SLA DQ ditakrifkan</li>
+      <li>✅ Dokumentasi diterbitkan</li>
+      <li>✅ Mesyuarat steering diadakan</li>
+    </ul>
+  </section>
+
+  <!-- ============ 9. MILESTONES ============ -->
+  <section id="milestones">
+    <h2><span class="section-num">9</span>Milestone &amp; Roadmap</h2>
+    <table>
+      <tr><th>Fasa</th><th>Tempoh</th><th>Deliverable Utama</th><th>Kriteria Keluar</th></tr>
+      <tr><td>Fasa 0: Penemuan</td><td>2 minggu</td><td>Skop, stakeholder, inventori sumber</td><td>Piagam ditandatangani</td></tr>
+      <tr><td>Fasa 1: Asas Platform</td><td>3–4 minggu</td><td>Landing zone, storan, IAM, CI/CD</td><td>Dev/staging/prod automatik</td></tr>
+      <tr><td>Fasa 2: Sumber Gelombang 1</td><td>4 minggu</td><td>Ahli, karya, royalti</td><td>Bronze lengkap</td></tr>
+      <tr><td>Fasa 3: Model Terkurasi</td><td>4 minggu</td><td>Silver/Gold, DQ, katalog</td><td>Mart ahli/karya/royalti diperakui</td></tr>
+      <tr><td>Fasa 4: Produk Analitik</td><td>4 minggu</td><td>Papan pemuka royalti, DQ</td><td>Pengguna perniagaan mengesahkan KPI</td></tr>
+      <tr><td>Fasa 5: Skala &amp; ML</td><td>Berterusan</td><td>Lebih banyak sumber, streaming, ML</td><td>SLA, keselamatan, kos dipenuhi</td></tr>
+    </table>
+    <div class="mermaid">
+gantt
+    title Roadmap SGAE Data Lake (16-20 minggu)
+    dateFormat  YYYY-MM-DD
+    section Fasa 0
+    Penemuan              :f0, 2025-01-01, 14d
+    section Fasa 1
+    Asas Platform         :f1, after f0, 21d
+    section Fasa 2
+    Sumber Gelombang 1    :f2, after f1, 28d
+    section Fasa 3
+    Model Terkurasi       :f3, after f2, 28d
+    section Fasa 4
+    Produk Analitik       :f4, after f3, 28d
+    section Fasa 5
+    Skala & ML            :f5, after f4, 60d
+    </div>
+  </section>
+
+  <!-- ============ 10-16. PAKEJ FAIL 1 ============ -->
+  <section id="set1">
+    <h2><span class="section-num">10</span>Set 1 — Transformasi Silver/Gold</h2>
+    <p>PySpark dan dbt untuk membersihkan data Bronze → Silver → Gold. Terhubung dengan <a href="#datamodel" class="xref">Model Data</a> dan <a href="#dq" class="xref">DQ</a>.</p>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>transformations/silver/member.py</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>"""Transformasi Bronze → Silver untuk domain Members."""
+
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
+from pyspark.sql.window import Window
+
+
+def clean_member(df: DataFrame) -> DataFrame:
+    return (
+        df
+        .withColumn("member_id", F.trim(F.col("member_id")))
+        .withColumn("ipi_number", F.trim(F.col("ipi_number")))
+        .withColumn("full_name", F.initcap(F.trim(F.col("full_name"))))
+        .withColumn("email", F.lower(F.trim(F.col("email"))))
+        .withColumn("bank_account_masked",
+            F.concat(F.lit("****"), F.substring(F.col("bank_account"), -4, 4)))
+        .withColumn("status", F.lower(F.trim(F.col("status"))))
+        .drop("bank_account")
+    )
+
+
+def dedupe_member(df: DataFrame) -> DataFrame:
+    w = Window.partitionBy("member_id").orderBy(F.col("updated_at").desc())
+    return df.withColumn("rn", F.row_number().over(w)).filter(F.col("rn") == 1).drop("rn")
+
+
+def validate_member(df: DataFrame) -> DataFrame:
+    return df.filter(
+        F.col("member_id").isNotNull()
+        & F.col("ipi_number").isNotNull()
+        & F.col("status").isin("active", "inactive", "suspended")
+    )</code></pre>
+      </div>
+    </div>
+    <div class="callout success"><strong>✅ Status:</strong> 13 fail dalam set ini. Terhubung ke <a href="#set10" class="xref">DAG Airflow</a>, <a href="#set11" class="xref">GE</a>, dan <a href="#set4" class="xref">Ujian</a>.</div>
+  </section>
+
+  <section id="set2">
+    <h2><span class="section-num">11</span>Set 2 — Terraform Landing Zone</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>infra/terraform/main.tf</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>terraform {
+  required_version = ">= 1.5.0"
+  backend "s3" {
+    bucket = "sgae-terraform-state"
+    key    = "data-lake/terraform.tfstate"
+    region = "eu-west-1"
+  }
+}
+
+resource "aws_s3_bucket" "zone" {
+  for_each = toset(["bronze", "silver", "gold", "sandbox"])
+  bucket   = "sgae-data-lake-${var.environment}-${each.key}"
+}
+
+resource "aws_s3_bucket_versioning" "zone" {
+  for_each = aws_s3_bucket.zone
+  bucket   = each.value.id
+  versioning_configuration { status = "Enabled" }
+}
+
+resource "aws_kms_key" "data_lake" {
+  description             = "KMS key untuk SGAE Data Lake"
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
+}</code></pre>
+      </div>
+    </div>
+    <div class="callout success"><strong>✅ Status:</strong> 5 fail Terraform. Terhubung ke <a href="#set6" class="xref">CI/CD</a> dan <a href="#set14" class="xref">DR/BCP</a>.</div>
+  </section>
+
+  <section id="set3">
+    <h2><span class="section-num">12</span>Set 3 — Papan Pemuka DQ</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>observability/dq_dashboard.sql</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>-- Kadar lulus DQ mengikut domain (30 hari)
+WITH dq_results AS (
+    SELECT domain, rule_name, severity, check_date,
+        total_records, failed_records,
+        CASE WHEN total_records = 0 THEN 1.0
+             ELSE 1.0 - (failed_records::float / total_records) END AS pass_rate
+    FROM governance.dq_results
+    WHERE check_date &gt;= CURRENT_DATE - INTERVAL '30 days'
+)
+SELECT domain, AVG(pass_rate) AS avg_pass_rate,
+       SUM(failed_records) AS total_failed,
+       COUNT(DISTINCT rule_name) AS rules_count
+FROM dq_results
+WHERE severity = 'critical'
+GROUP BY domain
+ORDER BY avg_pass_rate ASC;</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="set4">
+    <h2><span class="section-num">13</span>Set 4 — Ujian Unit</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>tests/test_members_ingest.py</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>from transformations.silver.member import clean_member, dedupe_member, validate_member
+
+
+def test_clean_member_lowercase_email(sample_members):
+    df = clean_member(sample_members)
+    emails = [r.email for r in df.collect() if r.email]
+    assert all(e == e.lower() for e in emails)
+
+
+def test_clean_member_masks_bank_account(sample_members):
+    df = clean_member(sample_members)
+    row = df.filter("member_id = 'M001'").collect()[0]
+    assert row.bank_account_masked == "****7890"</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="set5">
+    <h2><span class="section-num">14</span>Set 5 — Docker Compose</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>docker-compose.yml</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>version: "3.9"
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: sgae
+      POSTGRES_PASSWORD: sgae
+      POSTGRES_DB: sgae_meta
+    ports: ["5432:5432"]
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    ports: ["9000:9000", "9001:9001"]
+  airflow:
+    image: apache/airflow:2.8.1-python3.11
+    ports: ["8080:8080"]
+  spark:
+    image: bitnami/spark:3.5
+    ports: ["7077:7077", "8081:8080"]
+  trino:
+    image: trinodb/trino:latest
+    ports: ["8082:8080"]</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="set6">
+    <h2><span class="section-num">15</span>Set 6 — CI/CD</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>Makefile</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>.PHONY: help bootstrap test dq-check lint build deploy
+
+bootstrap:
+	pip install -r requirements.txt
+	docker-compose up -d postgres minio
+
+test:
+	pytest tests/ -v --cov=transformations --cov=ingestion
+
+dq-check:
+	python -m scripts.dq_runner --config governance/dq/
+
+lint:
+	ruff check .
+	mypy transformations ingestion
+
+build:
+	docker build -t sgae-data-lake:latest .
+
+deploy:
+	terraform -chdir=infra/terraform apply -var-file=envs/$${ENV}.tfvars</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="set7">
+    <h2><span class="section-num">16</span>Set 7 — Skrip Utiliti</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>scripts/healthcheck.py</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>import sys
+import boto3
+from botocore.exceptions import ClientError
+
+CHECKS = [
+    ("Bronze bucket", "sgae-data-lake-prod-bronze"),
+    ("Silver bucket", "sgae-data-lake-prod-silver"),
+    ("Gold bucket", "sgae-data-lake-prod-gold"),
+    ("Sandbox bucket", "sgae-data-lake-prod-sandbox"),
+]
+
+
+def check_bucket(s3, name: str) -> bool:
+    try:
+        s3.head_bucket(Bucket=name)
+        return True
+    except ClientError:
+        return False
+
+
+def main() -> int:
+    s3 = boto3.client("s3")
+    failures = 0
+    for label, bucket in CHECKS:
+        ok = check_bucket(s3, bucket)
+        print(f"[{'OK' if ok else 'FAIL'}] {label}: {bucket}")
+        if not ok:
+            failures += 1
+    return 1 if failures else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 17-23. PAKEJ FAIL 2 ============ -->
+  <section id="set8">
+    <h2><span class="section-num">17</span>Set 8 — Trino Catalog</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>infra/trino/catalog/iceberg.properties</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>connector.name=iceberg
+hive.metastore.uri=thrift://hive-metastore:9083
+iceberg.file-format=PARQUET
+iceberg.compression-codec=SNAPPY
+hive.s3.endpoint=http://minio:9000
+hive.s3.path-style-access=true</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="set9">
+    <h2><span class="section-num">18</span>Set 9 — BI (Superset &amp; Metabase)</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>bi/superset/dashboards/royalty_dashboard.yaml</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>dashboard:
+  slug: royalty-overview
+  title: "Royalti — Gambaran Keseluruhan"
+  owner: royalties-team
+  charts:
+    - name: total_net_monthly
+      type: line
+      datasource: trino.gold.royalty_member_monthly
+      sql: |
+        SELECT month, SUM(total_net) AS total_net
+        FROM gold.royalty_member_monthly
+        WHERE month &gt;= date_trunc('month', current_date - interval '12' month)
+        GROUP BY 1 ORDER BY 1
+  rbac:
+    - role: royalties-team
+    - role: finance
+    - role: steering</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="set10">
+    <h2><span class="section-num">19</span>Set 10 — Airflow DAG</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>orchestration/dags/dag_royalty_cycle.py</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>from airflow import DAG
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from airflow.operators.empty import EmptyOperator
+from dag_common import DAG_DEFAULTS
+
+with DAG(
+    dag_id="royalty_cycle",
+    description="Kitaran royalti bulanan end-to-end",
+    schedule="0 6 5 * *",
+    tags=["sgae", "royalties", "cycle"],
+    **DAG_DEFAULTS,
+) as dag:
+    start = EmptyOperator(task_id="start")
+    ingest = TriggerDagRunOperator(task_id="trigger_ingest_royalties",
+        trigger_dag_id="ingest_royalties", wait_for_completion=True)
+    silver = TriggerDagRunOperator(task_id="trigger_silver",
+        trigger_dag_id="silver_transform", wait_for_completion=True)
+    gold = TriggerDagRunOperator(task_id="trigger_gold",
+        trigger_dag_id="gold_aggregate", wait_for_completion=True)
+    dq = TriggerDagRunOperator(task_id="trigger_dq",
+        trigger_dag_id="dq_check", wait_for_completion=True)
+    end = EmptyOperator(task_id="end")
+    start >> ingest >> silver >> gold >> dq >> end</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="set11">
+    <h2><span class="section-num">20</span>Set 11 — Great Expectations</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>governance/great_expectations/expectations/silver_member.json</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>{
+  "expectation_suite_name": "silver_member",
+  "expectations": [
+    { "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": { "column": "member_id" } },
+    { "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": { "column": "member_id" } },
+    { "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": { "column": "email",
+                  "regex": "^[^@]+@[^@]+\\.[^@]+$", "mostly": 0.99 } },
+    { "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": { "column": "status",
+                  "value_set": ["active", "inactive", "suspended"] } }
+  ],
+  "meta": { "domain": "members", "severity": "critical" }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="set12">
+    <h2><span class="section-num">21</span>Set 12 — OpenMetadata</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>governance/openmetadata/lineage_config.yaml</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>source:
+  type: airflow
+  serviceName: sgae_airflow
+  serviceConnection:
+    config:
+      type: Airflow
+      hostPort: http://airflow:8080
+  sourceConfig:
+    config:
+      type: PipelineMetadata
+sink:
+  type: metadata-rest
+  config: {}
+workflowConfig:
+  openMetadataServerConfig:
+    hostPort: http://openmetadata:8585/api
+    authProvider: openmetadata
+    securityConfig:
+      jwtToken: ${OPENMETADATA_JWT}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="set13">
+    <h2><span class="section-num">22</span>Set 13 — Notebook ML</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>notebooks/01_royalty_anomaly_detection.ipynb (ringkasan)</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>from pyspark.sql import SparkSession
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import IsolationForest
+
+spark = SparkSession.builder.appName("royalty_anomaly").getOrCreate()
+df = spark.read.parquet("s3://sgae-data-lake-prod/gold/royalty_member_monthly/")
+pdf = df.toPandas()
+
+pdf = pdf.sort_values(["member_id", "month"])
+pdf["rolling_mean"] = pdf.groupby("member_id")["total_net"].transform(
+    lambda s: s.rolling(3, min_periods=1).mean())
+pdf["rolling_std"] = pdf.groupby("member_id")["total_net"].transform(
+    lambda s: s.rolling(3, min_periods=1).std())
+pdf["zscore"] = (pdf["total_net"] - pdf["rolling_mean"]) / pdf["rolling_std"].replace(0, np.nan)
+pdf["zscore_flag"] = pdf["zscore"].abs() &gt; 3
+
+features = pdf[["total_net", "total_works"]].fillna(0).values
+iso = IsolationForest(contamination=0.02, random_state=42)
+pdf["iso_flag"] = iso.fit_predict(features) == -1
+
+anomalies = pdf[pdf["iso_flag"] | pdf["zscore_flag"]]
+result = spark.createDataFrame(anomalies[["month", "member_id", "total_net", "zscore", "iso_flag", "zscore_flag"]])
+result.write.mode("overwrite").parquet("s3://sgae-data-lake-prod/gold/royalty_anomaly/")</code></pre>
+      </div>
+    </div>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>notebooks/02_member_churn_forecast.ipynb (ringkasan)</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score
+
+spark = SparkSession.builder.appName("churn_forecast").getOrCreate()
+member = spark.read.parquet("s3://sgae-data-lake-prod/silver/member/")
+royalty = spark.read.parquet("s3://sgae-data-lake-prod/gold/royalty_member_monthly/")
+
+features = royalty.groupBy("member_id").agg(
+    F.sum("total_net").alias("total_net_12m"),
+    F.avg("total_net").alias("avg_net_12m"),
+    F.sum("total_works").alias("total_works_12m"),
+    F.count("*").alias("months_active"),
+)
+df = member.join(features, on="member_id", how="left").fillna(0)
+pdf = df.select("member_id", "status", "total_net_12m", "avg_net_12m",
+                "total_works_12m", "months_active").toPandas()
+pdf["churn"] = (pdf["status"] != "active").astype(int)
+
+X = pdf[["total_net_12m", "avg_net_12m", "total_works_12m", "months_active"]].values
+y = pdf["churn"].values
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+model = GradientBoostingClassifier(n_estimators=200, max_depth=3, random_state=42)
+model.fit(X_train, y_train)
+print("ROC AUC:", roc_auc_score(y_test, model.predict_proba(X_test)[:, 1]))</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="set14">
+    <h2><span class="section-num">23</span>Set 14 — Runbook DR/BCP &amp; Insiden</h2>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>docs/runbooks/dr-bcp.md (ringkasan)</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code># Runbook: Disaster Recovery dan Business Continuity Plan
+
+## Sasaran
+- RTO: 4 jam
+- RPO: 1 jam
+- Ketersediaan: 99.5%
+
+## Strategi Sandaran
+
+| Data | Kekerapan | Retensi | Lokasi |
+|---|---|---|---|
+| Bronze | Harian | 30 hari | S3 versioning + CRR |
+| Silver | Harian | 30 hari | S3 versioning + CRR |
+| Gold | Harian | 30 hari | S3 versioning + CRR |
+| Metadata | Harian | 30 hari | Sandaran DB |
+| Terraform | Setiap commit | Selamanya | Git + state S3 |
+
+## Langkah Pemulihan
+1. Kenal pasti julat masa terjejas.
+2. Pulihkan objek S3 versi sebelumnya.
+3. Jalankan semula pipeline hiliran.
+4. Sahkan DQ.
+5. Dokumentasikan insiden.
+
+## Ujian DR
+| Ujian | Kekerapan | Pemilik |
+|---|---|---|
+| Pemulihan objek S3 | Bulanan | Data Engineering |
+| Failover AZ | Suku tahun | Cloud Architect |
+| Failover wilayah | Tahunan | Cloud Architect + Security |
+| Senaman insiden | Suku tahun | Security + Ops |</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 24. GLOSSARY (NEW) ============ -->
+  <section id="glossary">
+    <h2><span class="section-num">24</span>Glosari Istilah SGAE</h2>
+    <p>Rujukan pantas untuk istilah yang digunakan dalam projek ini.</p>
+
+    <h3>24.1 Istilah SGAE</h3>
+    <div class="glossary-grid">
+      <div class="glossary-item"><strong>SGAE</strong><span>Sociedad General de Autores y Editores — pertubuhan pengurusan hak kolektif Sepanyol</span></div>
+      <div class="glossary-item"><strong>ISWC</strong><span>International Standard Musical Work Code — kod unik antarabangsa untuk karya muzik (contoh: T-123456789-0)</span></div>
+      <div class="glossary-item"><strong>IPI</strong><span>Interested Parties Information — nombor unik antarabangsa untuk ahli/penerbit (contoh: 00012345678)</span></div>
+      <div class="glossary-item"><strong>ISNI</strong><span>International Standard Name Identifier — pengecam nama untuk penyumbang kreatif</span></div>
+      <div class="glossary-item"><strong>Repertoire</strong><span>Koleksi karya muzik yang diurus oleh SGAE</span></div>
+      <div class="glossary-item"><strong>Rights Share</strong><span>Bahagian hak (0–100%) yang dipegang oleh ahli untuk karya tertentu</span></div>
+      <div class="glossary-item"><strong>Royalty</strong><span>Bayaran kepada ahli berdasarkan penggunaan karya</span></div>
+      <div class="glossary-item"><strong>Distribution</strong><span>Proses pengagihan royalti kepada ahli</span></div>
+      <div class="glossary-item"><strong>Reciprocal Agreement</strong><span>Perjanjian timbal balik dengan persatuan hak luar negara</span></div>
+      <div class="glossary-item"><strong>Statement</strong><span>Penyata royalti yang dikeluarkan kepada ahli</span></div>
+    </div>
+
+    <h3>24.2 Istilah Data &amp; Seni Bina</h3>
+    <div class="glossary-grid">
+      <div class="glossary-item"><strong>Lakehouse</strong><span>Gabungan data lake dan data warehouse — storan terbuka + keupayaan transaksi</span></div>
+      <div class="glossary-item"><strong>Bronze</strong><span>Zon data mentah, sejajar sumber, tidak boleh ubah</span></div>
+      <div class="glossary-item"><strong>Silver</strong><span>Zon data terkurasi — bersih, seragam, tanpa pendua</span></div>
+      <div class="glossary-item"><strong>Gold</strong><span>Zon data penyajian — mart perniagaan dan KPI</span></div>
+      <div class="glossary-item"><strong>ELT</strong><span>Extract-Load-Transform — pola pemprosesan moden</span></div>
+      <div class="glossary-item"><strong>CDC</strong><span>Change Data Capture — tangkapan perubahan dari log pangkalan data</span></div>
+      <div class="glossary-item"><strong>MDM</strong><span>Master Data Management — pengurusan data induk (ahli, karya, kontrak)</span></div>
+      <div class="glossary-item"><strong>DAG</strong><span>Directed Acyclic Graph — struktur aliran kerja Airflow</span></div>
+      <div class="glossary-item"><strong>Schema Evolution</strong><span>Keupayaan menyesuaikan skema tanpa memecahkan pipeline</span></div>
+      <div class="glossary-item"><strong>Idempotent</strong><span>Sifat pipeline yang boleh dijalankan berulang tanpa mengubah hasil</span></div>
+    </div>
+
+    <h3>24.3 Istilah Kualiti &amp; Tadbir Urus</h3>
+    <div class="glossary-grid">
+      <div class="glossary-item"><strong>DQ</strong><span>Data Quality — kualiti data (kelengkapan, keunikan, kesahihan, ketepatan masa, konsistensi)</span></div>
+      <div class="glossary-item"><strong>SLA</strong><span>Service Level Agreement — perjanjian tahap perkhidmatan</span></div>
+      <div class="glossary-item"><strong>RTO</strong><span>Recovery Time Objective — masa maksimum untuk pulih selepas bencana</span></div>
+      <div class="glossary-item"><strong>RPO</strong><span>Recovery Point Objective — jumlah data maksimum yang boleh hilang</span></div>
+      <div class="glossary-item"><strong>RACI</strong><span>Responsible, Accountable, Consulted, Informed — matriks peranan</span></div>
+      <div class="glossary-item"><strong>Lineage</strong><span>Garis keturunan data — asal-usul dan transformasi data</span></div>
+      <div class="glossary-item"><strong>Data Contract</strong><span>Perjanjian formal antara pengeluar dan pengguna data</span></div>
+      <div class="glossary-item"><strong>Steward</strong><span>Individu yang bertanggungjawab ke atas definisi dan kualiti data domain</span></div>
+      <div class="glossary-item"><strong>Certification</strong><span>Status set data yang lulus semua kriteria kualiti dan tadbir urus</span></div>
+      <div class="glossary-item"><strong>Data Mesh</strong><span>Pendekatan terdesentralisasi di mana domain memiliki data mereka</span></div>
+    </div>
+
+    <h3>24.4 Istilah Keselamatan &amp; Pematuhan</h3>
+    <div class="glossary-grid">
+      <div class="glossary-item"><strong>RBAC</strong><span>Role-Based Access Control — kawalan akses berdasarkan peranan</span></div>
+      <div class="glossary-item"><strong>ABAC</strong><span>Attribute-Based Access Control — kawalan akses berdasarkan atribut</span></div>
+      <div class="glossary-item"><strong>IAM</strong><span>Identity and Access Management — pengurusan identiti dan akses</span></div>
+      <div class="glossary-item"><strong>PII</strong><span>Personally Identifiable Information — maklumat pengenalan peribadi</span></div>
+      <div class="glossary-item"><strong>GDPR</strong><span>General Data Protection Regulation — peraturan perlindungan data EU</span></div>
+      <div class="glossary-item"><strong>Masking</strong><span>Penyamaran data sensitif (contoh: ****1234)</span></div>
+      <div class="glossary-item"><strong>Tokenization</strong><span>Penggantian data sensitif dengan token unik</span></div>
+      <div class="glossary-item"><strong>KMS</strong><span>Key Management Service — perkhidmatan pengurusan kunci enkripsi</span></div>
+      <div class="glossary-item"><strong>Audit Log</strong><span>Log semua akses dan perubahan untuk pematuhan</span></div>
+      <div class="glossary-item"><strong>Least Privilege</strong><span>Prinsip memberikan akses minimum yang diperlukan</span></div>
+    </div>
+
+    <h3>24.5 Istilah Kewangan &amp; Operasi</h3>
+    <div class="glossary-grid">
+      <div class="glossary-item"><strong>FinOps</strong><span>Financial Operations — disiplin pengurusan kos awan</span></div>
+      <div class="glossary-item"><strong>TCO</strong><span>Total Cost of Ownership — jumlah kos pemilikan</span></div>
+      <div class="glossary-item"><strong>KPI</strong><span>Key Performance Indicator — petunjuk prestasi utama</span></div>
+      <div class="glossary-item"><strong>MTTR</strong><span>Mean Time To Recovery — purata masa pemulihan</span></div>
+      <div class="glossary-item"><strong>MTBF</strong><span>Mean Time Between Failures — purata masa antara kegagalan</span></div>
+      <div class="glossary-item"><strong>DR</strong><span>Disaster Recovery — pemulihan bencana</span></div>
+      <div class="glossary-item"><strong>BCP</strong><span>Business Continuity Plan — pelan kesinambungan perniagaan</span></div>
+      <div class="glossary-item"><strong>Incident</strong><span>Kejadian yang menjejaskan perkhidmatan (P1–P4)</span></div>
+      <div class="glossary-item"><strong>Runbook</strong><span>Panduan operasi untuk situasi tertentu</span></div>
+      <div class="glossary-item"><strong>War Room</strong><span>Bilik maya untuk koordinasi insiden kritikal</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 25. COST CHARTS (NEW) ============ -->
+  <section id="costs">
+    <h2><span class="section-num">25</span>Carta Kos (FinOps)</h2>
+    <p>Anggaran kos bulanan untuk SGAE Data Lake sepanjang 5 fasa. Angka adalah ilustratif untuk perancangan bajet; kos sebenar bergantung kepada volum data, wilayah, dan pilihan teknologi.</p>
+
+    <h3>25.1 Anggaran Kos Bulanan Mengikut Fasa</h3>
+    <div class="chart-grid">
+      <div class="chart-box"><canvas id="chartPhaseCost"></canvas></div>
+      <div class="chart-box"><canvas id="chartCostBreakdown"></canvas></div>
+    </div>
+
+    <h3>25.2 Unjuran Kos 12 Bulan</h3>
+    <div class="chart-box"><canvas id="chart12Months"></canvas></div>
+
+    <h3>25.3 Jadual Kos Terperinci</h3>
+    <table>
+      <tr><th>Kategori</th><th>Fasa 0–1 (€/bln)</th><th>Fasa 2–3 (€/bln)</th><th>Fasa 4–5 (€/bln)</th></tr>
+      <tr><td>Storan (S3)</td><td>150</td><td>400</td><td>900</td></tr>
+      <tr><td>Pengiraan (Spark/EMR)</td><td>800</td><td>2,000</td><td>4,500</td></tr>
+      <tr><td>Orkestrasi (MWAA/Airflow)</td><td>350</td><td>500</td><td>800</td></tr>
+      <tr><td>Query (Trino/Athena)</td><td>200</td><td>600</td><td>1,500</td></tr>
+      <tr><td>BI (Superset/Metabase)</td><td>100</td><td>250</td><td>500</td></tr>
+      <tr><td>Katalog &amp; DQ</td><td>150</td><td>300</td><td>600</td></tr>
+      <tr><td>Rangkaian &amp; Data Transfer</td><td>80</td><td>200</td><td>450</td></tr>
+      <tr><td>Keselamatan &amp; Audit</td><td>120</td><td>200</td><td>400</td></tr>
+      <tr><td>ML (SageMaker/MLflow)</td><td>0</td><td>200</td><td>800</td></tr>
+      <tr><td><strong>Jumlah</strong></td><td><strong>1,950</strong></td><td><strong>4,650</strong></td><td><strong>10,450</strong></td></tr>
+    </table>
+
+    <div class="callout warning">
+      <strong>⚠️ Nota:</strong> Angka di atas adalah untuk 3 domain pertama. Skala volum data dan penambahan domain baharu (Kontrak, Penggunaan, Persatuan Luar) akan menaikkan kos secara linear hingga 2×.
+    </div>
+
+    <h3>25.4 Strategi FinOps</h3>
+    <ul>
+      <li><strong>Lifecycle policies:</strong> Bronze → Standard-IA (90h) → Glacier (365h)</li>
+      <li><strong>Partitioning:</strong> Partition mengikut <code>ingestion_date</code> dan <code>month</code></li>
+      <li><strong>Compaction:</strong> Compact fail Parquet kecil setiap minggu</li>
+      <li><strong>Right-sizing:</strong> Auto-scaling Spark cluster mengikut beban</li>
+      <li><strong>Spot instances:</strong> Untuk batch pipeline tidak kritikal (jimat 60–70%)</li>
+      <li><strong>Query budgets:</strong> Had kos per user per hari dalam Trino</li>
+      <li><strong>Reserved capacity:</strong> Untuk beban asas (saving 30–40%)</li>
+    </ul>
+  </section>
+
+  <!-- ============ 26. MATURITY HEATMAP (NEW) ============ -->
+  <section id="maturity">
+    <h2><span class="section-num">26</span>Peta Haba Kematangan Komponen</h2>
+    <p>Status kematangan setiap komponen pada akhir Fasa 0. Skala 0 (tiada) hingga 5 (optimum).</p>
+
+    <div class="heatmap-legend">
+      <span><span class="legend-swatch lvl-0"></span>0 — Tiada</span>
+      <span><span class="legend-swatch lvl-1"></span>1 — Asas</span>
+      <span><span class="legend-swatch lvl-2"></span>2 — Dibangunkan</span>
+      <span><span class="legend-swatch lvl-3"></span>3 — Berfungsi</span>
+      <span><span class="legend-swatch lvl-4"></span>4 — Matang</span>
+      <span><span class="legend-swatch lvl-5"></span>5 — Optimum</span>
+    </div>
+
+    <h3>26.1 Kematangan Mengikut Komponen × Dimensi</h3>
+    <div class="heatmap">
+      <div class="heatmap-header">Komponen</div>
+      <div class="heatmap-header">Reka Bentuk</div>
+      <div class="heatmap-header">Pelaksanaan</div>
+      <div class="heatmap-header">Ujian</div>
+      <div class="heatmap-header">Dokumentasi</div>
+      <div class="heatmap-header">Operasi</div>
+
+      <div class="heatmap-label">Bronze Ingestion</div>
+      <div class="heatmap-cell lvl-4">4</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+
+      <div class="heatmap-label">Silver Transform</div>
+      <div class="heatmap-cell lvl-4">4</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+
+      <div class="heatmap-label">Gold Aggregate</div>
+      <div class="heatmap-cell lvl-4">4</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+
+      <div class="heatmap-label">Data Quality</div>
+      <div class="heatmap-cell lvl-4">4</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+
+      <div class="heatmap-label">Orkestrasi (Airflow)</div>
+      <div class="heatmap-cell lvl-4">4</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+
+      <div class="heatmap-label">Keselamatan &amp; IAM</div>
+      <div class="heatmap-cell lvl-5">5</div>
+      <div class="heatmap-cell lvl-4">4</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+
+      <div class="heatmap-label">Katalog &amp; Lineage</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+      <div class="heatmap-cell lvl-1">1</div>
+      <div class="heatmap-cell lvl-2">2</div>
+      <div class="heatmap-cell lvl-1">1</div>
+
+      <div class="heatmap-label">BI &amp; Papan Pemuka</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+      <div class="heatmap-cell lvl-1">1</div>
+      <div class="heatmap-cell lvl-2">2</div>
+      <div class="heatmap-cell lvl-1">1</div>
+
+      <div class="heatmap-label">ML &amp; AI</div>
+      <div class="heatmap-cell lvl-2">2</div>
+      <div class="heatmap-cell lvl-1">1</div>
+      <div class="heatmap-cell lvl-1">1</div>
+      <div class="heatmap-cell lvl-1">1</div>
+      <div class="heatmap-cell lvl-0">0</div>
+
+      <div class="heatmap-label">CI/CD</div>
+      <div class="heatmap-cell lvl-4">4</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+
+      <div class="heatmap-label">DR/BCP</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+      <div class="heatmap-cell lvl-1">1</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+
+      <div class="heatmap-label">Observability</div>
+      <div class="heatmap-cell lvl-3">3</div>
+      <div class="heatmap-cell lvl-2">2</div>
+      <div class="heatmap-cell lvl-1">1</div>
+      <div class="heatmap-cell lvl-2">2</div>
+      <div class="heatmap-cell lvl-2">2</div>
+    </div>
+
+    <h3>26.2 Ringkasan Kematangan</h3>
+    <table>
+      <tr><th>Komponen</th><th>Purata</th><th>Status</th><th>Keutamaan</th></tr>
+      <tr><td>Keselamatan &amp; IAM</td><td>3.6</td><td><span class="status done">Matang</span></td><td>Kekalkan</td></tr>
+      <tr><td>Bronze Ingestion</td><td>3.0</td><td><span class="status done">Berfungsi</span></td><td>Sederhana</td></tr>
+      <tr><td>Silver Transform</td><td>3.0</td><td><span class="status done">Berfungsi</span></td><td>Sederhana</td></tr>
+      <tr><td>Data Quality</td><td>3.0</td><td><span class="status done">Berfungsi</span></td><td>Sederhana</td></tr>
+      <tr><td>CI/CD</td><td>3.0</td><td><span class="status done">Berfungsi</span></td><td>Sederhana</td></tr>
+      <tr><td>Orkestrasi</td><td>2.8</td><td><span class="status wip">Dibangunkan</span></td><td>Tinggi</td></tr>
+      <tr><td>Gold Aggregate</td><td>2.8</td><td><span class="status wip">Dibangunkan</span></td><td>Tinggi</td></tr>
+      <tr><td>DR/BCP</td><td>2.2</td><td><span class="status wip">Dibangunkan</span></td><td>Tinggi</td></tr>
+      <tr><td>Observability</td><td>2.0</td><td><span class="status wip">Dibangunkan</span></td><td>Tinggi</td></tr>
+      <tr><td>Katalog &amp; Lineage</td><td>1.8</td><td><span class="status todo">Asas</span></td><td>Kritikal</td></tr>
+      <tr><td>BI &amp; Papan Pemuka</td><td>1.8</td><td><span class="status todo">Asas</span></td><td>Kritikal</td></tr>
+      <tr><td>ML &amp; AI</td><td>1.0</td><td><span class="status todo">Asas</span></td><td>Rendah</td></tr>
+    </table>
+
+    <div class="callout warning">
+      <strong>⚠️ Perhatian:</strong> Komponen <strong>Katalog &amp; Lineage</strong> dan <strong>BI</strong> memerlukan pelaburan pada Fasa 1–2. <strong>ML</strong> boleh ditangguhkan ke Fasa 4–5.
+    </div>
+  </section>
+
+  <!-- ============ 27. FILE INDEX ============ -->
+  <section id="fileindex">
+    <h2><span class="section-num">27</span>Indeks Fail Lengkap</h2>
+    <p>Semua 65 fail dalam projek, dikategorikan mengikut lokasi.</p>
+    <h3>27.1 Ringkasan Mengikut Kategori</h3>
+    <table>
+      <tr><th>Kategori</th><th>Bilangan</th><th>Lokasi</th><th>Seksyen</th></tr>
+      <tr><td>Dokumentasi</td><td>10</td><td><code>docs/</code></td><td><a href="#phase0" class="xref">Fasa 0</a></td></tr>
+      <tr><td>Infrastruktur</td><td>10</td><td><code>infra/</code></td><td><a href="#set2" class="xref">Terraform</a></td></tr>
+      <tr><td>Pengingesan &amp; Transformasi</td><td>10</td><td><code>ingestion/</code>, <code>transformations/</code></td><td><a href="#set1" class="xref">Silver/Gold</a></td></tr>
+      <tr><td>Orkestrasi</td><td>8</td><td><code>orchestration/dags/</code></td><td><a href="#set10" class="xref">DAG</a></td></tr>
+      <tr><td>Tadbir Urus</td><td>10</td><td><code>governance/</code></td><td><a href="#dq" class="xref">DQ</a></td></tr>
+      <tr><td>Penyajian &amp; ML</td><td>8</td><td><code>bi/</code>, <code>notebooks/</code>, <code>observability/</code></td><td><a href="#set9" class="xref">BI</a></td></tr>
+      <tr><td>Ujian &amp; CI/CD</td><td>8</td><td><code>tests/</code>, <code>.github/</code></td><td><a href="#set6" class="xref">CI/CD</a></td></tr>
+      <tr><td>Skrip</td><td>3</td><td><code>scripts/</code></td><td><a href="#set7" class="xref">Utiliti</a></td></tr>
+      <tr><td><strong>Jumlah</strong></td><td><strong>65</strong></td><td></td><td></td></tr>
+    </table>
+    <h3>27.2 Fail Terperinci</h3>
+    <div class="file">
+      <div class="file-header" onclick="toggleFile(this)"><span>Senarai penuh 65 fail</span><span>▼</span></div>
+      <div class="file-body">
+<pre><code>docs/
+├── 01-skop-domain.md
+├── 02-tadbir-urus-peranan.md
+├── 03-landing-zone-keselamatan.md
+├── 04-pengingesan-bronze.md
+├── 05-sla-dq-pensijilan.md
+├── 06-dokumentasi.md
+├── 07-semakan-steering.md
+└── runbooks/
+    ├── ingest-gagal.md
+    ├── dq-gagal.md
+    ├── pemulihan-data.md
+    ├── dr-bcp.md
+    └── incident-response.md
+
+infra/
+├── landing-zone/
+│   ├── accounts.yaml
+│   └── network.yaml
+├── iam/
+│   ├── roles.yaml
+│   └── policies.yaml
+├── terraform/
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   └── envs/
+│       ├── dev.tfvars
+│       └── prod.tfvars
+└── trino/
+    ├── catalog/
+    │   ├── iceberg.properties
+    │   ├── hive.properties
+    │   └── tpch.properties
+    ├── config.properties
+    └── jvm.config
+
+ingestion/
+├── batch/
+│   ├── members.yml
+│   ├── members.py
+│   ├── works.py
+│   ├── royalties.py
+│   └── bronze_writer.py
+└── streaming/
+
+transformations/
+├── silver/
+│   ├── member.py
+│   ├── work.py
+│   └── royalty.py
+├── gold/
+│   ├── royalty_member_monthly.py
+│   └── work_usage_summary.py
+└── dbt/
+    ├── dbt_project.yml
+    ├── models/
+    │   ├── silver/
+    │   │   ├── member.sql
+    │   │   ├── work.sql
+    │   │   └── royalty.sql
+    │   └── gold/
+    │       ├── royalty_member_monthly.sql
+    │       └── work_usage_summary.sql
+    └── schema.yml
+
+orchestration/dags/
+├── dag_common.py
+├── dag_ingest_members.py
+├── dag_ingest_works.py
+├── dag_ingest_royalties.py
+├── dag_silver_transform.py
+├── dag_gold_aggregate.py
+├── dag_dq_check.py
+└── dag_royalty_cycle.py
+
+governance/
+├── raci.csv
+├── klasifikasi.csv
+├── pelantikan/
+│   ├── pemilik-members.md
+│   ├── pemilik-works.md
+│   └── pemilik-royalties.md
+├── kontrak/
+│   ├── members.yml
+│   ├── works.yml
+│   └── royalties.yml
+├── dq/
+│   ├── members.yml
+│   ├── works.yml
+│   └── royalties.yml
+├── great_expectations/
+│   ├── great_expectations.yml
+│   ├── expectations/
+│   │   ├── silver_member.json
+│   │   ├── silver_work.json
+│   │   └── silver_royalty.json
+│   └── checkpoints/
+│       └── silver_checkpoint.yml
+└── openmetadata/
+    ├── ingestion_members.yaml
+    ├── ingestion_works.yaml
+    ├── ingestion_royalties.yaml
+    └── lineage_config.yaml
+
+bi/
+├── superset/
+│   ├── docker-compose.yml
+│   ├── superset_config.py
+│   └── dashboards/
+│       ├── royalty_dashboard.yaml
+│       └── dq_dashboard.yaml
+└── metabase/
+    └── questions.sql
+
+observability/
+├── dq_dashboard.sql
+├── dq_dashboard.json
+└── alerts.yaml
+
+notebooks/
+├── 01_royalty_anomaly_detection.ipynb
+└── 02_member_churn_forecast.ipynb
+
+tests/
+├── conftest.py
+├── test_members_ingest.py
+├── test_transformations.py
+└── test_dq_rules.py
+
+scripts/
+├── bootstrap.sh
+├── seed_data.py
+└── healthcheck.py
+
+steering/
+├── fasa0-bahan.md
+└── fasa0-minit.md
+
+.github/workflows/
+├── ci.yml
+└── cd.yml
+
+docker-compose.yml
+Dockerfile
+Makefile
+requirements.txt
+README.md</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 28. XREFS ============ -->
+  <section id="xrefs">
+    <h2><span class="section-num">28</span>Hubungan Antara Komponen</h2>
+    <div class="mermaid">
+flowchart TB
+    subgraph SUMBER[Sumber Data]
+        ERP[ERP]
+        CRM[CRM]
+        ROY[Royalty Engine]
+        FIN[Finance]
+    end
+    subgraph INGEST[Pengingesan]
+        BATCH[Batch / CDC]
+        STREAM[Streaming]
+    end
+    subgraph LAKE[Lapisan Data]
+        BRONZE[Bronze]
+        SILVER[Silver]
+        GOLD[Gold]
+    end
+    subgraph SERVE[Penyajian]
+        TRINO[Trino]
+        SUPERSET[Superset]
+        METABASE[Metabase]
+        ML[ML Notebooks]
+    end
+    subgraph GOV[Tadbir Urus]
+        DQ[Peraturan DQ]
+        GE[Great Expectations]
+        CATALOG[OpenMetadata]
+        DASH_DQ[DQ Dashboard]
+    end
+    subgraph OPS[Operasi]
+        AIRFLOW[Airflow]
+        CICD[CI/CD]
+        RUNBOOK[Runbook]
+    end
+    ERP --> BATCH
+    CRM --> BATCH
+    ROY --> BATCH
+    FIN --> BATCH
+    BATCH --> BRONZE
+    STREAM --> BRONZE
+    BRONZE --> SILVER
+    SILVER --> GOLD
+    GOLD --> TRINO
+    TRINO --> SUPERSET
+    TRINO --> METABASE
+    GOLD --> ML
+    SILVER --> GE
+    GOLD --> GE
+    GE --> DQ
+    DQ --> DASH_DQ
+    CATALOG -.-> BRONZE
+    CATALOG -.-> SILVER
+    CATALOG -.-> GOLD
+    AIRFLOW --> BATCH
+    AIRFLOW --> SILVER
+    AIRFLOW --> GOLD
+    AIRFLOW --> GE
+    CICD --> AIRFLOW
+    CICD --> TRINO
+    </div>
+
+    <h3>28.1 Aliran Data</h3>
+    <div class="mermaid">
+sequenceDiagram
+    participant S as Sumber
+    participant A as Airflow
+    participant B as Bronze
+    participant V as Silver
+    participant G as Gold
+    participant E as GE
+    participant T as Trino
+    participant U as Pengguna
+    A->>S: Ambil data
+    S-->>A: Rekod mentah
+    A->>B: Tulis Bronze
+    A->>V: Transform
+    V->>V: Bersih + dedupe
+    A->>E: Jalankan DQ Silver
+    E-->>A: Lulus / Gagal
+    A->>G: Agregat Gold
+    A->>E: Jalankan DQ Gold
+    E-->>A: Lulus
+    A->>T: Daftar jadual
+    U->>T: Query
+    T-->>U: Keputusan
+    </div>
+  </section>
+
+  <!-- ============ 29. KPI ============ -->
+  <section id="kpi">
+    <h2><span class="section-num">29</span>KPI &amp; Sasaran</h2>
+    <h3>29.1 KPI Teknikal</h3>
+    <table>
+      <tr><th>KPI</th><th>Sasaran</th><th>Pengukuran</th></tr>
+      <tr><td>Kesegaran data vs SLA</td><td>&gt; 99%</td><td>Papan pemuka Airflow</td></tr>
+      <tr><td>Kadar lulus DQ kritikal</td><td>100%</td><td>Great Expectations</td></tr>
+      <tr><td>Bilangan set data diperakui</td><td>≥ 3 (Fasa 1)</td><td>OpenMetadata</td></tr>
+      <tr><td>Masa onboarding sumber baharu</td><td>&lt; 2 minggu</td><td>Log projek</td></tr>
+      <tr><td>Ketersediaan platform</td><td>99.5%</td><td>CloudWatch</td></tr>
+      <tr><td>RTO / RPO</td><td>4j / 1j</td><td>Ujian DR</td></tr>
+      <tr><td>Kos per TB</td><td>Ikut bajet</td><td>FinOps dashboard</td></tr>
+    </table>
+    <h3>29.2 KPI Perniagaan</h3>
+    <table>
+      <tr><th>KPI</th><th>Sasaran</th><th>Sumber</th></tr>
+      <tr><td>Pengguna perniagaan aktif</td><td>&gt; 50 dalam Fasa 4</td><td>Superset/Metabase</td></tr>
+      <tr><td>Masa untuk laporan royalti</td><td>Dari minggu → hari</td><td>Sebelum vs selepas</td></tr>
+      <tr><td>Pengecualian rekonsiliasi</td><td>Berkurang 80%</td><td>Laporan finance</td></tr>
+      <tr><td>Ketepatan ramalan churn</td><td>ROC AUC &gt; 0.75</td><td>ML notebook</td></tr>
+      <tr><td>Ketepatan pengesanan anomali</td><td>&gt; 90%</td><td>ML notebook</td></tr>
+    </table>
+    <h3>29.3 SLA Mengikut Domain</h3>
+    <table>
+      <tr><th>Domain</th><th>Kesegaran</th><th>Ketersediaan</th><th>DQ Kritikal</th></tr>
+      <tr><td>Members</td><td>24 jam</td><td>99.5%</td><td>100%</td></tr>
+      <tr><td>Works</td><td>24 jam</td><td>99.5%</td><td>100%</td></tr>
+      <tr><td>Royalties</td><td>48 jam</td><td>99.9%</td><td>100%</td></tr>
+    </table>
+  </section>
+
+  <footer style="text-align:center; padding: 2rem; color: var(--muted); font-size: 0.85rem;">
+    <p><strong>SGAE Data Lake — Dokumentasi Lengkap v2.0</strong></p>
+    <p>Versi 2.0 · Dijana untuk rujukan dalaman SGAE · Hak cipta terpelihara</p>
+    <p style="margin-top: 0.5rem;"><a href="#overview" style="color: var(--primary);">↑ Kembali ke atas</a></p>
+  </footer>
+</main>
+
+<button id="back-top" title="Kembali ke atas">↑</button>
+
+<script>
+  // ===== Theme management =====
+  const html = document.documentElement;
+  const themeToggle = document.getElementById('theme-toggle');
+  const savedTheme = localStorage.getItem('sgae-theme') || 'light';
+  html.setAttribute('data-theme', savedTheme);
+  updateThemeButton();
+
+  themeToggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('sgae-theme', next);
+    updateThemeButton();
+    // Re-render Mermaid
+    document.querySelectorAll('.mermaid').forEach(el => {
+      const original = el.getAttribute('data-original');
+      if (original) el.innerHTML = original;
+    });
+    mermaid.init(undefined, '.mermaid');
+    // Update charts
+    updateChartTheme();
+  });
+
+  function updateThemeButton() {
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    themeToggle.textContent = isDark ? '☀️ Tema Cerah' : '🌙 Tema Gelap';
+  }
+
+  // ===== Print button =====
+  document.getElementById('print-btn').addEventListener('click', () => {
+    window.print();
+  });
+
+  // ===== Mermaid =====
+  document.querySelectorAll('.mermaid').forEach(el => {
+    el.setAttribute('data-original', el.innerHTML);
+  });
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: html.getAttribute('data-theme') === 'dark' ? 'dark' : 'default',
+    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+    sequence: { useMaxWidth: true },
+    gantt: { useMaxWidth: true }
+  });
+
+  // ===== File toggle =====
+  function toggleFile(header) {
+    const file = header.parentElement;
+    file.classList.toggle('collapsed');
+    const arrow = header.querySelector('span:last-child');
+    arrow.textContent = file.classList.contains('collapsed') ? '▶' : '▼';
+  }
+
+  // ===== Sidebar toggle =====
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggle-sidebar');
+  toggleBtn.addEventListener('click', () => sidebar.classList.toggle('visible'));
+
+  // ===== Back to top =====
+  const backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 400) backTop.classList.add('show');
+    else backTop.classList.remove('show');
+  });
+  backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // ===== Active nav =====
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('section[id]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  // ===== Search =====
+  const search = document.getElementById('search');
+  search.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    navLinks.forEach(link => {
+      const text = link.textContent.toLowerCase();
+      link.classList.toggle('hidden', q !== '' && !text.includes(q));
+    });
+    sections.forEach(sec => {
+      if (!q) { sec.style.display = ''; return; }
+      sec.style.display = sec.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+
+  // ===== Smooth scroll =====
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (window.innerWidth <= 1024) sidebar.classList.remove('visible');
+          history.pushState(null, '', href);
+        }
+      }
+    });
+  });
+
+  // ===== Ctrl+K =====
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      search.focus();
+    }
+  });
+
+  // ===== CHARTS =====
+  const chartInstances = [];
+  function getChartColors() {
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    return {
+      text: isDark ? '#e2e8f0' : '#1e293b',
+      grid: isDark ? '#334155' : '#e2e8f0',
+      bg: isDark ? '#1e293b' : '#ffffff'
+    };
+  }
+
+  function createPhaseChart() {
+    const ctx = document.getElementById('chartPhaseCost');
+    if (!ctx) return;
+    const colors = getChartColors();
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Fasa 0–1', 'Fasa 2–3', 'Fasa 4–5'],
+        datasets: [
+          { label: 'Storan', data: [150, 400, 900], backgroundColor: '#0ea5e9' },
+          { label: 'Pengiraan', data: [800, 2000, 4500], backgroundColor: '#8b5cf6' },
+          { label: 'Orkestrasi', data: [350, 500, 800], backgroundColor: '#10b981' },
+          { label: 'Query', data: [200, 600, 1500], backgroundColor: '#f59e0b' },
+          { label: 'BI', data: [100, 250, 500], backgroundColor: '#ef4444' },
+          { label: 'Katalog & DQ', data: [150, 300, 600], backgroundColor: '#ec4899' },
+          { label: 'Lain-lain', data: [200, 600, 1650], backgroundColor: '#64748b' }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: { display: true, text: 'Kos Bulanan Mengikut Fasa (€)', color: colors.text },
+          legend: { labels: { color: colors.text, boxWidth: 12, font: { size: 10 } } }
+        },
+        scales: {
+          x: { stacked: true, ticks: { color: colors.text }, grid: { color: colors.grid } },
+          y: { stacked: true, ticks: { color: colors.text }, grid: { color: colors.grid } }
+        }
+      }
+    });
+    chartInstances.push(chart);
+  }
+
+  function createBreakdownChart() {
+    const ctx = document.getElementById('chartCostBreakdown');
+    if (!ctx) return;
+    const colors = getChartColors();
+    const chart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Pengiraan', 'Storan', 'Query', 'Orkestrasi', 'BI', 'Katalog & DQ', 'Lain-lain'],
+        datasets: [{
+          data: [7300, 1450, 2300, 1650, 850, 1050, 2450],
+          backgroundColor: ['#8b5cf6', '#0ea5e9', '#f59e0b', '#10b981', '#ef4444', '#ec4899', '#64748b']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: { display: true, text: 'Pecahan Kos (Fasa 4–5)', color: colors.text },
+          legend: { position: 'right', labels: { color: colors.text, font: { size: 10 } } }
+        }
+      }
+    });
+    chartInstances.push(chart);
+  }
+
+  function create12MonthChart() {
+    const ctx = document.getElementById('chart12Months');
+    if (!ctx) return;
+    const colors = getChartColors();
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['B1','B2','B3','B4','B5','B6','B7','B8','B9','B10','B11','B12'],
+        datasets: [
+          {
+            label: 'Kos Sebenar (€/bln)',
+            data: [1200, 1500, 1800, 2500, 3200, 4000, 4650, 5500, 6800, 8000, 9500, 10450],
+            borderColor: '#0ea5e9',
+            backgroundColor: 'rgba(14,165,233,0.1)',
+            tension: 0.3,
+            fill: true
+          },
+          {
+            label: 'Bajet (€/bln)',
+            data: [2000, 2000, 2500, 3000, 4000, 4500, 5000, 6000, 7000, 8500, 10000, 11000],
+            borderColor: '#10b981',
+            borderDash: [5, 5],
+            tension: 0.3,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: { display: true, text: 'Unjuran Kos 12 Bulan vs Bajet', color: colors.text },
+          legend: { labels: { color: colors.text } }
+        },
+        scales: {
+          x: { ticks: { color: colors.text }, grid: { color: colors.grid } },
+          y: { ticks: { color: colors.text }, grid: { color: colors.grid }, beginAtZero: true }
+        }
+      }
+    });
+    chartInstances.push(chart);
+  }
+
+  function updateChartTheme() {
+    chartInstances.forEach(chart => chart.destroy());
+    chartInstances.length = 0;
+    createPhaseChart();
+    createBreakdownChart();
+    create12MonthChart();
+  }
+
+  // Init charts when section is visible
+  const costSection = document.getElementById('costs');
+  const chartObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && chartInstances.length === 0) {
+        createPhaseChart();
+        createBreakdownChart();
+        create12MonthChart();
+      }
+    });
+  }, { threshold: 0.1 });
+  if (costSection) chartObserver.observe(costSection);
+</script>
+</body>
+</html>
+```
+
+---
+
+## Ringkasan Ciri Baharu v2.0
+
+| # | Ciri | Lokasi | Keterangan |
+|---|---|---|---|
+| 1 | **Eksport PDF** | Butang sidebar + `@media print` | Klik 🖨️ atau `Ctrl+P` — sidebar, toggle, dan butang tersembunyi; jadual dan kod kekal berwarna |
+| 2 | **Tema Gelap** | Butang sidebar | Toggle 🌙/☀️, disimpan dalam `localStorage`, tukar warna Mermaid dan Chart.js secara automatik |
+| 3 | **Glosari** | Seksyen 24 | 5 kategori, 50 istilah (SGAE, data, tadbir urus, keselamatan, kewangan) |
+| 4 | **Carta Kos** | Seksyen 25 | 3 carta Chart.js: kos mengikut fasa, pecahan kos, unjuran 12 bulan |
+| 5 | **Peta Kematangan** | Seksyen 26 | Heatmap 12 komponen × 5 dimensi, skala 0–5, ringkasan jadual |
+
+## Statistik Fail
+
+| Metrik | Nilai |
+|---|---|
+| Jumlah seksyen | 29 |
+| Jumlah fail dipaparkan | 65 |
+| Baris HTML | ~2,400 |
+| Carta Chart.js | 3 |
+| Diagram Mermaid | 5 |
+| Istilah glosari | 50 |
+| Sel heatmap | 60 |
+| Saiz fail | ~140 KB |
+
+## Cara Guna
+
+1. **Simpan** sebagai `sgae-data-lake.html`
+2. **Buka** dalam pelayar moden (Chrome, Firefox, Edge, Safari)
+3. **Navigasi:**
+   - Menu kiri → klik mana-mana seksyen
+   - `Ctrl+K` → carian pantas
+   - Klik `xref` biru → lompat ke komponen berkaitan
+4. **Tema:** Klik 🌙 untuk tema gelap (kekal selepas refresh)
+5. **PDF:** Klik 🖨️ → "Save as PDF" → simpan
+6. **Kod:** Klik header fail untuk buka/tutup
+
+Jika anda mahu, saya boleh:
+- Tambah **eksport Markdown/JSON** butang
+- Tambah **peta interaktif** dengan Leaflet
+- Tambah **borang carian lanjutan** dengan penapis kategori
+- Tambah **PWA** (Progressive Web App) untuk akses offline
